@@ -71,8 +71,4 @@ def secondAction():
     print("You called function 2")
 
 
-def leave():
-    exit()
-
-
 app()
