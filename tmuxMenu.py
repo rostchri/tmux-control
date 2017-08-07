@@ -40,16 +40,6 @@ def app():
         mainMenu(prompt)
 
 
-def mainMenu(prompt):
-    options = [
-        ["first action", firstAction],
-        ["second action", secondAction],
-        ["quit", quit],
-    ]
-    thisMenu = Menu("main menu", options, prompt)
-    thisMenu.launch()
-
-
 def buildPrompt():
     os.system("whoami > {0} && hostname >> {0}".format("promptInfo.txt"))
     with open("promptInfo.txt", "r") as f:
@@ -59,16 +49,26 @@ def buildPrompt():
     return("{0}@{1}:".format(currentUser, currentMachine))
 
 
-def handle(func):
-    func()
-
-
-def firstAction():
+def functionA():
     print("You called function 1")
 
 
-def secondAction():
+def functionB():
     print("You called function 2")
+
+
+def mainMenu(prompt):
+    options = [
+        ["first action", functionA],
+        ["second action", functionB],
+        ["quit", quit],
+    ]
+    thisMenu = Menu("main menu", options, prompt)
+    thisMenu.launch()
+
+
+def handle(func):
+    func()
 
 
 app()
