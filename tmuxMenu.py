@@ -22,12 +22,34 @@ class Config:
     def edit(self):
         pass
 
+    def nameValidator(self, info, initPrompt, secondPrompt, target):
+        validated = False
+        while not validated:
+            print(info + ": " + target)
+            cmd = input(initPrompt)
+            if cmd == "y":
+                result = target
+                validated = True
+            elif cmd == "n":
+                target = input(secondPrompt)
+            elif cmd == "q":
+                sys.exit()
+            else:
+                print("not a valid command: %s"%(cmd))
+        return(result)
+
     def create(self):
         cmd, reading, self.rawLines = str, 1, []
-        self.rawLines = []
-        print("creating config: %s" %(self.name))
-        print("enter the names of your machines and the respective infos, separated by comma.")
-        print("you can add multiple combinations, separated by semicolon.")
+        info = "creating config:"
+        initPrompt = "Is that name correct? (y/n)\n" + prompt
+        secondPrompt = "Enter a new name for the config please"
+        self.name = self.validator(info, initPrompt, secondPrompt, self.name)
+        self.build()
+
+
+    def build(self):
+        print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
+        reading = True
         while reading:
             cmd = input(prompt)
             if cmd == "q":
@@ -60,9 +82,9 @@ class Menu:
         self.text = self.buildMenu()
 
     def buildMenu(self):
-        #for option in self.options:
-        #    self.menuDict[self.options.index(option)] = option
-        #    self.menuDict[self.options.index(option)][0] = "{0}".format(self.menuDict[self.options.index(option)][0])
+        for option in self.options:
+            self.menuDict[self.options.index(option)] = option
+            self.menuDict[self.options.index(option)][0] = "{0}".format(self.menuDict[self.options.index(option)][0])
         i = 0
         self.text = ""
         for option in self.menuDict:
@@ -71,15 +93,24 @@ class Menu:
         return(self.text)
 
     def launch(self):
-        print(self.text)
         cmd = None
+        if len(self.menuDict) == 1:
+            handle(self.menuDict[0][1])
+            return(0)
         while cmd not in range(len(self.menuDict)):
+            print(self.text)
             cmd = input(prompt)
-            if int(cmd) - 1 in range(len(self.menuDict)):
-                handle(self.menuDict[int(cmd) - 1][1])
-            else:
-                print("your cmd was not accepted:\n{0}\n{1}".format(cmd, type(cmd)))
-        return(cmd)
+            if cmd == "q":
+                return(sys.exit())
+            try:
+                int(cmd)
+                if int(cmd) - 1 in range(len(self.menuDict)):
+                    handle(self.menuDict[int(cmd)-1][1])
+                    return(self.menuDict[int(cmd)-1])
+                else:
+                    print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
+            except:
+                print("your cmd was not accepted:\n{0}\nplease enter a valid command (a number between 1 and {1})".format(cmd, len(self.menuDict)))
 
     def result(self):
         return(self.name)
@@ -120,9 +151,8 @@ def getConfigs():
 
 def getStart():
     startMenu = [
-        ["edit config", sessionConfig.edit]
+        #["edit config", sessionConfig.edit]
         ["launch tmux-session with config", launchSession],
-        ["quit", quit],
     ]
     return(startMenu)
 
@@ -136,13 +166,16 @@ def launchSession():
 
 
 def main():
-    chosenConfig = Menu("chose config", getConfigs()).result()
+    configMenu = Menu("testConfig", getConfigs())
+    chosenConfig = "TOBEDETERMINED"
     sessionConfig = Config(chosenConfig)
 
-    mainMenu = Menu("start menu", getStart)
-    run = mainMenu.launch()
+    startMenu = getStart()
+    mainMenu = Menu("start menu", startMenu)
+    run = 1
     while run != 0:
-        mainMenu.launch()
+        run = mainMenu.launch()
+        return(run)
 
 
 app()
