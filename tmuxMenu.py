@@ -38,8 +38,8 @@ class Config:
                     self.segments = (x for x in cmd.split(";"))
                     for segment in self.segments:
                         self.machineNames[self.segments.index(segment)], self.machineInfos[self.segments.index(segment)] = segment.split(",")
-            except:
-                print("something went wrong!\ninput: {0}".format(cmd))
+                except:
+                    print("something went wrong!\ninput: {0}".format(cmd))
         
     def loadData(self):
         self.machineNames, self.machineInfos = [], []
@@ -136,13 +136,11 @@ def launchSession():
 
 
 def main():
-    cfgs = getConfigs()
-    choseConfig = Menu("chose config", cfgs)
+    choseConfig = Menu("chose config", getConfigs())
     chosenConfig = choseConfig.result()
     sessionConfig = Config(chosenConfig)
 
-    startMenu = getStart()
-    mainMenu = Menu("start menu", startMenu)
+    mainMenu = Menu("start menu", getStart)
     run = mainMenu.launch()
     while run != 0:
         mainMenu.launch()
