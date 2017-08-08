@@ -19,8 +19,37 @@ class Config:
         else:
             self.data = self.create()
 
+    def build(self):
+        print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
+        reading = True
+        while reading:
+            cmd = input(prompt)
+            if cmd == "q":
+                reading = False
+            else:
+                try:
+                    self.segments = []
+                    self.segments = (x for x in cmd.split(";"))
+                    for segment in self.segments:
+                        self.machineNames[self.segments.index(segment)], self.machineInfos[self.segments.index(segment)] = segment.split(",")
+                except:
+                    print("something went wrong!\ninput: {0}".format(cmd))
+
+    def create(self):
+        cmd, reading, self.rawLines = str, 1, []
+        info = "creating config:"
+        initPrompt = "Is that name correct? (y/n)\n" + prompt
+        secondPrompt = "Enter a new name for the config please"
+        self.name = self.validator(info, initPrompt, secondPrompt, self.name)
+        self.build()
+
     def edit(self):
         pass
+
+    def loadData(self):
+        self.machineNames, self.machineInfos = [], []
+        for line in self.rawLines:
+            self.machineNames[self.rawLines.index(line)], self.machineInfos[self.rawLines.index(line)] = line.split(",")
 
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
@@ -37,36 +66,6 @@ class Config:
             else:
                 print("not a valid command: %s"%(cmd))
         return(result)
-
-    def create(self):
-        cmd, reading, self.rawLines = str, 1, []
-        info = "creating config:"
-        initPrompt = "Is that name correct? (y/n)\n" + prompt
-        secondPrompt = "Enter a new name for the config please"
-        self.name = self.validator(info, initPrompt, secondPrompt, self.name)
-        self.build()
-
-
-    def build(self):
-        print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
-        reading = True
-        while reading:
-            cmd = input(prompt)
-            if cmd == "q":
-                reading = False
-            else:
-                try:
-                    self.segments = []
-                    self.segments = (x for x in cmd.split(";"))
-                    for segment in self.segments:
-                        self.machineNames[self.segments.index(segment)], self.machineInfos[self.segments.index(segment)] = segment.split(",")
-                except:
-                    print("something went wrong!\ninput: {0}".format(cmd))
-        
-    def loadData(self):
-        self.machineNames, self.machineInfos = [], []
-        for line in self.rawLines:
-            self.machineNames[self.rawLines.index(line)], self.machineInfos[self.rawLines.index(line)] = line.split(",")
 
     def saveConfig(self):
         self.savingData = self.data.replace("a", "b")
