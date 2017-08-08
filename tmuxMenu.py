@@ -9,7 +9,6 @@ server = libtmux.Server()
 
 
 class Config:
-
     def __init__(self, name):
         self.name = name
         self.file = os.path.join(configDir, self.name + ".txt")
@@ -18,18 +17,34 @@ class Config:
                 self.rawLines = f.readlines()
                 self.data = self.loadData()
         else:
-            self.data = self.makeConfig()
-    
+            self.data = self.create()
+
+    def edit(self):
+        pass
+
     def create(self):
-        pass
-    
-    def makeConfig(self):
-        pass
+        cmd, reading, self.rawLines = str, 1, []
+        self.rawLines = []
+        print("creating config: %s" %(self.name))
+        print("enter the names of your machines and the respective infos, separated by comma.")
+        print("you can add multiple combinations, separated by semicolon.")
+        while reading:
+            cmd = input(prompt)
+            if cmd == "q":
+                reading = False
+            else:
+                try:
+                    self.segments = []
+                    self.segments = (x for x in cmd.split(";"))
+                    for segment in self.segments:
+                        self.machineNames[self.segments.index(segment)], self.machineInfos[self.segments.index(segment)] = segment.split(",")
+            except:
+                print("something went wrong!\ninput: {0}".format(cmd))
         
     def loadData(self):
         self.machineNames, self.machineInfos = [], []
         for line in self.rawLines:
-            self.machineNames, self.machineInfos .append(line.split(","))
+            self.machineNames[self.rawLines.index(line)], self.machineInfos[self.rawLines.index(line)] = line.split(",")
 
     def saveConfig(self):
         self.savingData = self.data.replace("a", "b")
@@ -38,21 +53,19 @@ class Config:
 
 
 class Menu:
-
-    def __init__(self, name, options, prompt):
+    def __init__(self, name, options):
         self.menuDict = {}
         self.name = name
         self.options = options
-        self.prompt = prompt
         self.text = self.buildMenu()
 
     def buildMenu(self):
-        for option in self.options:
-            self.menuDict[self.options.index(option)] = option
-            self.menuDict[self.options.index(option)][0] = "{0}".format(self.menuDict[self.options.index(option)][0])
-            i = 0
-            self.text = ""
-            for option in self.menuDict:
+        #for option in self.options:
+        #    self.menuDict[self.options.index(option)] = option
+        #    self.menuDict[self.options.index(option)][0] = "{0}".format(self.menuDict[self.options.index(option)][0])
+        i = 0
+        self.text = ""
+        for option in self.menuDict:
                 self.text += "{0}: {1}\n".format(i+1, self.menuDict[option][0])
                 i+=1
         return(self.text)
@@ -61,17 +74,23 @@ class Menu:
         print(self.text)
         cmd = None
         while cmd not in range(len(self.menuDict)):
-            cmd = input(self.prompt)
+            cmd = input(prompt)
             if int(cmd) - 1 in range(len(self.menuDict)):
                 handle(self.menuDict[int(cmd) - 1][1])
             else:
                 print("your cmd was not accepted:\n{0}\n{1}".format(cmd, type(cmd)))
+        return(cmd)
+
+    def result(self):
+        return(self.name)
 
 
 def app():
+    global prompt
     if __name__ == "__main__":
         prompt = buildPrompt()
-        main(prompt)
+        while 1:
+            main()
 
 
 def buildPrompt():
@@ -92,22 +111,41 @@ def functionB():
 
 
 def getConfigs():
-    pass
+    cfgs = []
+    for f in os.listdir(configDir):
+        if not "DS_Store" in f:
+            cfgs.append([f],[os.path.join(configDir, f)])
+    return(cfgs)
+
+
+def getStart():
+    startMenu = [
+        ["edit config", sessionConfig.edit]
+        ["launch tmux-session with config", launchSession],
+        ["quit", quit],
+    ]
+    return(startMenu)
 
 
 def handle(func):
     func()
 
 
-def main(prompt):
+def launchSession():
+    print("session launched")
 
-    startMenu = [
-        ["first action", functionA],
-        ["second action", functionB],
-        ["quit", quit],
-    ]
-    thisMenu = Menu("start menu", startMenu, prompt)
-    thisMenu.launch()
+
+def main():
+    cfgs = getConfigs()
+    choseConfig = Menu("chose config", cfgs)
+    chosenConfig = choseConfig.result()
+    sessionConfig = Config(chosenConfig)
+
+    startMenu = getStart()
+    mainMenu = Menu("start menu", startMenu)
+    run = mainMenu.launch()
+    while run != 0:
+        mainMenu.launch()
 
 
 app()
