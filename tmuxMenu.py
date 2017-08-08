@@ -136,8 +136,7 @@ def launchSession():
 
 
 def main():
-    choseConfig = Menu("chose config", getConfigs())
-    chosenConfig = choseConfig.result()
+    chosenConfig = Menu("chose config", getConfigs()).result()
     sessionConfig = Config(chosenConfig)
 
     mainMenu = Menu("start menu", getStart)
