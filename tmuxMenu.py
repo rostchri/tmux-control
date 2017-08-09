@@ -26,11 +26,12 @@ class Config:
                     segments = self.parse(cmd.split(";"))
                     for id, info in segments:
                         machines[id] = info
-                except TypeError as e:
-                    print("TypeError!\ninput: {0}".format(cmd))
+                except:
+                    print("Input must be splittable into by-comma-splittable segments with semicolons!\nInput was:\n{0}".format(cmd))
         return(machines)
             
-    # returns a validated (by self.nameValidator) name for the config (and creates the parameters for self.nameValidator)
+    # returns a validated (by self.nameValidator) name for the config
+    # (and creates the parameters for self.nameValidator)
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
         info = "\ncreating config:"
@@ -44,7 +45,8 @@ class Config:
     def edit(self):
         pass
 
-    # loops through a validating-and-replacing-process until the user-input is "y", returns the validated variable
+    # loops through a validating-and-replacing-process until the user-input is "y",
+    # returns the validated variable
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
         while not validated:
