@@ -10,8 +10,8 @@ class Config:
     def __init__(self, name):
         self.machines = {}
         self.name = name
-        self.file = os.path.join(configDir, self.name + ".txt")
-        if name + ".txt" in os.listdir(configDir):
+        self.file = os.path.join(configDir, self.name)
+        if name in os.listdir(configDir):
             with open(self.file, "r") as f:
                 machines = self.parseConfig(f.read()[:-1].split(";"))
             for machine in machines:
@@ -35,13 +35,15 @@ class Config:
                         self.machines[id] = info
                 except TypeError as e:
                     print("TypeError!\ninput: {0}".format(cmd))
+        self.saveConfig()
             
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
         info = "\ncreating config:"
         initPrompt = "Is that name correct? (y/n)\n{0}".format(prompt)
         secondPrompt = "Enter a new name for the config please.\n"
-        self.name = self.nameValidator(info, initPrompt, secondPrompt, self.name)
+        target = input("Name the new config please!\n" + prompt)
+        self.name = self.nameValidator(info, initPrompt, secondPrompt, target)
         self.build()
 
     def edit(self):
@@ -69,9 +71,13 @@ class Config:
             yield(machine)
 
     def saveConfig(self):
-        self.savingData = self.data.replace("a", "b")
+        self.file = os.path.join(configDir, self.name + ".txt")
+        savingData = ""
+        for machine in self.machines:
+            machineString = machine + "," + self.machines[machine][0] + ";"
+            savingData += machineString
         with open(self.file, "w") as f:
-            f.write(self.savingData)
+            f.write(savingData)
 
 
 class Menu:
@@ -137,13 +143,13 @@ def functionB():
 
 
 def getConfigs():
-    cfgs = []
+    cfgs = [["Create new config", "new config"]]
     for f in os.listdir(configDir):
         if not "DS_Store" in f:
-            cfgs.append([f, os.path.join(configDir, f)])
+            cfgs.append([f[:-4], f])
     configMenu = Menu("config menu", cfgs)
     chosenConfig = configMenu.launch()
-    thisConfig = Config(chosenConfig[8:-4])
+    thisConfig = Config(chosenConfig)
 
 
 def getStart():
