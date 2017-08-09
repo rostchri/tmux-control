@@ -7,7 +7,6 @@ server = libtmux.Server()
 
 
 class Config:
-
     def __init__(self, name):
         self.machines = {}
         self.name = name
@@ -98,7 +97,7 @@ class Menu:
             cmd = input(prompt)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
-                    handle(self.menuDict[int(cmd)-1][1])
+                    return(self.menuDict[int(cmd)-1][1])
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
 
@@ -141,13 +140,10 @@ def getConfigs():
     cfgs = []
     for f in os.listdir(configDir):
         if not "DS_Store" in f:
-            cfgs.append([f,os.path.join(configDir, f)])
-    print("These are the existing configs:")
-    for i, cfg in enumerate(cfgs):
-        print("{0}: {1}".format(i+1, cfg[0][:-4]))
-    cmd = input("enter the number of the config you'd like to use, or a new name to create a new one)!\n{0}".format(prompt))
-    configMenu = Menu(cmd, cfgs)
-    sessionConfig = Config(cmd)
+            cfgs.append([f, os.path.join(configDir, f)])
+    configMenu = Menu("config menu", cfgs)
+    chosenConfig = configMenu.launch()
+    thisConfig = Config(chosenConfig[8:-4])
 
 
 def getStart():
@@ -172,7 +168,8 @@ def main():
     mainMenu = Menu("Main Menu", startMenu)
     run = True
     while run:
-        mainMenu.launch()
+        result = mainMenu.launch()
+        result()
 
 
 app()
