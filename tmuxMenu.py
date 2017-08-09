@@ -8,6 +8,9 @@ server = libtmux.Server()
 
 
 class Config:
+    # checks if a config-file with the instances title exists,
+    # if it exists, self.machines equals the dict found in that file,
+    # otherwise self.create(), self.build() and self.save() are called (self-explaining)
     def __init__(self, name):
         self.machines = {}
         self.name = name
@@ -15,12 +18,14 @@ class Config:
         if name in os.listdir(configDir):
             with open(self.file, "r") as f:
                 self.machines = json.load(f)
-            for machine in self.machines:
-                print("machine: " + machine + ", infos:" + self.machines[machine])
         else:
-            self.data = self.create()
+            self.name = self.create()
+            self.machines = self.build()
+            self.save()
 
+    # builds a new config via user-input, returns dict in desired format
     def build(self):
+        machines = {}
         print("\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.")
         reading = True
         while reading:
@@ -29,25 +34,28 @@ class Config:
                 reading = False
             else:
                 try:
-                    machines = self.parseConfig(cmd.split(";"))
-                    for id, info in machines:
-                        self.machines[id] = info
+                    segments = self.parse(cmd.split(";"))
+                    for id, info in segments:
+                        machines[id] = info
                 except TypeError as e:
                     print("TypeError!\ninput: {0}".format(cmd))
-        self.saveConfig()
+        return(machines)
             
+    # returns a validated (by self.nameValidator) name for the config
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
         info = "\ncreating config:"
         initPrompt = "Is that name correct? (y/n)\n{0}".format(prompt)
         secondPrompt = "Enter a new name for the config please.\n"
         target = input("Name the new config please!\n" + prompt)
-        self.name = self.nameValidator(info, initPrompt, secondPrompt, target)
-        self.build()
+        name = self.nameValidator(info, initPrompt, secondPrompt, target)
+        return(name)
 
+    # will manipulate configs (add, modify or remove elements)
     def edit(self):
         pass
 
+    # loops through a validating-and-replacing-process until the user-input is "y", returns the validated variable
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
         while not validated:
@@ -58,30 +66,34 @@ class Config:
                 validated = True
             elif cmd == "n":
                 target = input(secondPrompt)
-            elif cmd == "q":
-                exitApp()
             else:
                 print("not a valid command: %s"%(cmd))
         return(result)
 
-    def parseConfig(self, rawInfo):
+    # splits all iterations of the passed parameter and yields the result
+    def parse(self, rawInfo):
         for line in rawInfo:
             machine = line.split(",", 2)
             yield(machine)
 
-    def saveConfig(self):
+    # saves the current configuration
+    def save(self):
         self.file = os.path.join(configDir, self.name + ".json")
         with open(self.file, "w") as f:
             json.dump(self.machines, f)
 
 
 class Menu:
+    # creates the to-be-printed-string by prefixing the return-value of "self.buildMenu" with the instances name (+ "\n") 
     def __init__(self, name, options):
         self.menuDict = {}
         self.name = name
         self.options = options
         self.text = name + "\n" + self.buildMenu()
 
+    # builds a dict from raw options with enum-results as keys,
+    # comprehends that dicts content as adequate, printable menu-options,
+    # returns the result as a string (n: option1 \n n+1: option2)
     def buildMenu(self):
         for i, option in enumerate(self.options):
             self.menuDict[i] = option
@@ -91,6 +103,9 @@ class Menu:
                 text += "{0}: {1}\n".format(i+1, self.menuDict[option][0])
         return(text)
 
+    # launches the menu (prints the string)
+    # loops the menu until a valid input has been made
+    # on valid input, returns the according value to the chosen option
     def launch(self):
         cmd = None
         while cmd not in range(len(self.menuDict)):
@@ -102,10 +117,9 @@ class Menu:
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
 
-    def result(self):
-        return(self.name)
 
-
+# sets the global prompt by calling the prompt-function,
+# prints the welcome-message, then calls the main-function
 def app():
     global prompt
     if __name__ == "__main__":
@@ -115,6 +129,7 @@ def app():
             main()
 
 
+# casts "whoami" and "hostname" to os, builds and returns a prompt
 def buildPrompt():
     os.system("whoami > {0} && hostname >> {0}".format("promptInfo.txt"))
     with open("promptInfo.txt", "r") as f:
@@ -124,53 +139,73 @@ def buildPrompt():
     return("\n{0}@{1}:".format(currentUser, currentMachine))
 
 
+# says Goodbye and quits program
 def exitApp():
     print("\nGoodbye")
     sys.exit(0)
 
 
-def functionA():
-    print("\nYou called function 1")
-
-
-def functionB():
-    print("\nYou called function 2")
-
-
+# reads the json-files in configDir, calls menu (for picking an existing or creating a new config)
 def getConfigs():
+    global currentConfig
     cfgs = [["Create new config", "new config"]]
     for f in os.listdir(configDir):
-        if not "DS_Store" in f:
+        if "json" in f:
             cfgs.append([f[:-5], f])
-    configMenu = Menu("config menu", cfgs)
+    configMenu = Menu("Config Menu", cfgs)
     chosenConfig = configMenu.launch()
-    thisConfig = Config(chosenConfig)
+    currentConfig = Config(chosenConfig)
 
 
+# will return the tmux-operation(s) to perform on targets
+def getOperation():
+    return(print)
+
+
+# initializes the startMenu-options (returns list of lists)
 def getStart():
     startMenu = [
-        ["launch tmux-session with config", launchSession],
-        ["manage config", getConfigs],
-        ["stop the app", exitApp],
+        ["Launch tmux-session with config", launchSession],
+        ["Manage config", getConfigs],
+        ["Stop the app", exitApp],
     ]
     return(startMenu)
 
 
-def handle(func):
-    func()
+# will return the targets to perform tmux-operations on
+def getTargets():
+    return([x+1 for x in range(3)])
 
 
-def launchSession():
-    print("\nsession launched")
+# will launch the actual tmux-session - called with:
+# a config (list of machines and respective info)
+# and a task (for now: ssh-logins (with the included info))
+def launchSession(operation, targets):
+    operation(targets)
+    print("launch successful!")
 
 
+# instantiates the mainMenu-object (of the Menu-class) with the initial menu-options it receives from getStart (which just returns a static dict)
+# then loops the main-menu-launch and executes the returned function
 def main():
     startMenu = getStart()
     mainMenu = Menu("Main Menu", startMenu)
     run = True
     while run:
         result = mainMenu.launch()
-        result()
+        if "launchSession" in str(result):
+            operation = getOperation()
+            targets = getTargets()
+            launchSession(operation, targets)
+        else:
+            result()
+        
+
+
+def operation(targets):
+    for target in targets:
+        print(target)
+    print("launch successful!")
 
 
 app()
