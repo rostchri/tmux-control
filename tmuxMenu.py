@@ -8,20 +8,9 @@ server = libtmux.Server()
 
 
 class Config:
-    # checks if a config-file with the instances title exists,
-    # if it exists, self.machines equals the dict found in that file,
-    # otherwise self.create(), self.build() and self.save() are called (self-explaining)
     def __init__(self, name):
         self.machines = {}
         self.name = name
-        self.file = os.path.join(configDir, self.name)
-        if name in os.listdir(configDir):
-            with open(self.file, "r") as f:
-                self.machines = json.load(f)
-        else:
-            self.name = self.create()
-            self.machines = self.build()
-            self.save()
 
     # builds a new config via user-input, returns dict in desired format
     def build(self):
@@ -70,6 +59,12 @@ class Config:
                 print("not a valid command: %s"%(cmd))
         return(result)
 
+    # self-explaining (no?) - calls for naming, building and saving of new config
+    def new(self):
+        self.name = self.create()
+        self.machines = self.build()
+        self.save()
+
     # splits all iterations of the passed parameter and yields the result
     def parse(self, rawInfo):
         for line in rawInfo:
@@ -81,6 +76,10 @@ class Config:
         self.file = os.path.join(configDir, self.name + ".json")
         with open(self.file, "w") as f:
             json.dump(self.machines, f)
+
+    def setData(self, file, machines):
+        self.file = file
+        self.machines = machines
 
 
 class Menu:
@@ -116,6 +115,7 @@ class Menu:
                     return(self.menuDict[int(cmd)-1][1])
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
+        return(self.name)
 
 
 # sets the global prompt by calling the prompt-function,
@@ -145,8 +145,7 @@ def exitApp():
 
 
 # reads the json-files in configDir, calls menu (for picking an existing or creating a new config)
-def getConfigs():
-    global currentConfig
+def getConfig():
     cfgs = [["Create new config", "new config"]]
     for f in os.listdir(configDir):
         if "json" in f:
@@ -154,6 +153,13 @@ def getConfigs():
     configMenu = Menu("Config Menu", cfgs)
     chosenConfig = configMenu.launch()
     currentConfig = Config(chosenConfig)
+    if chosenConfig in os.listdir(configDir):
+        configFile = os.path.join(configDir, chosenConfig)
+        with open(configFile, "r") as f:
+            machines = json.load(f)   
+        currentConfig.setData(configFile, machines)
+    else:
+        currentConfig.new()
 
 
 # will return the tmux-operation(s) to perform on targets
@@ -165,7 +171,7 @@ def getOperation():
 def getStart():
     startMenu = [
         ["Launch tmux-session with config", launchSession],
-        ["Manage config", getConfigs],
+        ["Manage config", getConfig],
         ["Stop the app", exitApp],
     ]
     return(startMenu)
