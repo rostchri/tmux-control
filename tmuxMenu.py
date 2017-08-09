@@ -200,7 +200,6 @@ def main():
             result()
         
 
-
 def operation(targets):
     for target in targets:
         print(target)
