@@ -39,18 +39,13 @@ class Config:
         cmd, reading, self.rawInfo = str, 1, []
         info = "\ncreating config:"
         initPrompt = "Is that name correct? (y/n)\n{0}".format(prompt)
-        secondPrompt = "Enter a new name for the config please"
+        secondPrompt = "Enter a new name for the config please.\n"
         self.name = self.nameValidator(info, initPrompt, secondPrompt, self.name)
         self.build()
 
     def edit(self):
         pass
 
-    def parseConfig(self, rawInfo):
-        for line in rawInfo:
-            machine = line.split(",", 2)
-            yield(machine)
-            
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
         while not validated:
@@ -66,6 +61,11 @@ class Config:
             else:
                 print("not a valid command: %s"%(cmd))
         return(result)
+
+    def parseConfig(self, rawInfo):
+        for line in rawInfo:
+            machine = line.split(",", 2)
+            yield(machine)
 
     def saveConfig(self):
         self.savingData = self.data.replace("a", "b")
@@ -122,6 +122,11 @@ def buildPrompt():
     return("\n{0}@{1}:".format(currentUser, currentMachine))
 
 
+def exitApp():
+    print("\nGoodbye")
+    sys.exit(0)
+
+
 def functionA():
     print("\nYou called function 1")
 
@@ -164,11 +169,6 @@ def main():
     run = True
     while run:
         mainMenu.launch()
-
-
-def exitApp():
-    print("goodbye")
-    sys.exit(0)
 
 
 app()
