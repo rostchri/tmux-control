@@ -1,3 +1,4 @@
+import json
 import libtmux
 import os
 import sys
@@ -13,9 +14,7 @@ class Config:
         self.file = os.path.join(configDir, self.name)
         if name in os.listdir(configDir):
             with open(self.file, "r") as f:
-                machines = self.parseConfig(f.read()[:-1].split(";"))
-            for machine in machines:
-                self.machines[machine[0]] = machine[1]
+                self.machines = json.load(f)
             for machine in self.machines:
                 print("machine: " + machine + ", infos:" + self.machines[machine])
         else:
@@ -71,13 +70,9 @@ class Config:
             yield(machine)
 
     def saveConfig(self):
-        self.file = os.path.join(configDir, self.name + ".txt")
-        savingData = ""
-        for machine in self.machines:
-            machineString = machine + "," + self.machines[machine][0] + ";"
-            savingData += machineString
+        self.file = os.path.join(configDir, self.name + ".json")
         with open(self.file, "w") as f:
-            f.write(savingData)
+            json.dump(self.machines, f)
 
 
 class Menu:
@@ -146,7 +141,7 @@ def getConfigs():
     cfgs = [["Create new config", "new config"]]
     for f in os.listdir(configDir):
         if not "DS_Store" in f:
-            cfgs.append([f[:-4], f])
+            cfgs.append([f[:-5], f])
     configMenu = Menu("config menu", cfgs)
     chosenConfig = configMenu.launch()
     thisConfig = Config(chosenConfig)
