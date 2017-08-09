@@ -53,7 +53,6 @@ class Config:
             machine = line.split(",", 2)
             yield(machine)
             
-        
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
         while not validated:
