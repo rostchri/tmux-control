@@ -9,47 +9,55 @@ server = libtmux.Server()
 
 
 class Config:
+
     def __init__(self, name):
+        self.machines = {}
         self.name = name
         self.file = os.path.join(configDir, self.name + ".txt")
         if self.file in os.listdir(configDir):
             with open(self.file, "r") as f:
-                self.rawLines = f.readlines()
-                self.data = self.loadData()
+                ids, infos = self.parseConfig(f.readlines())
+            for i, id in enumerate(ids):
+                self.machines[id] = infos[i]
         else:
             self.data = self.create()
 
     def build(self):
-        print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
         reading = True
         while reading:
+            print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
             cmd = input(prompt)
             if cmd == "q":
                 reading = False
             else:
                 try:
-                    self.segments = []
-                    self.segments = (x for x in cmd.split(";"))
-                    for segment in self.segments:
-                        self.machineNames[self.segments.index(segment)], self.machineInfos[self.segments.index(segment)] = segment.split(",")
-                except:
+                    machines = self.parseConfig(cmd.split(";"))
+                    for id, info in machines:
+                        id, info = id, info
+                        self.machines[id] = info
+                except TypeError as e:
                     print("something went wrong!\ninput: {0}".format(cmd))
-
+        print("alright, your machines:")
+        print(self.machines)
+            
     def create(self):
         cmd, reading, self.rawLines = str, 1, []
         info = "creating config:"
         initPrompt = "Is that name correct? (y/n)\n" + prompt
         secondPrompt = "Enter a new name for the config please"
-        self.name = self.validator(info, initPrompt, secondPrompt, self.name)
+        self.name = self.nameValidator(info, initPrompt, secondPrompt, self.name)
         self.build()
 
     def edit(self):
         pass
 
-    def loadData(self):
-        self.machineNames, self.machineInfos = [], []
-        for line in self.rawLines:
-            self.machineNames[self.rawLines.index(line)], self.machineInfos[self.rawLines.index(line)] = line.split(",")
+    def parseConfig(self, rawLines):
+        for line in rawLines:
+            #print(line)
+            machine = line.split(",", 2)
+            yield(machine)
+            
+        
 
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
