@@ -30,7 +30,7 @@ class Config:
                     print("TypeError!\ninput: {0}".format(cmd))
         return(machines)
             
-    # returns a validated (by self.nameValidator) name for the config
+    # returns a validated (by self.nameValidator) name for the config (and creates the parameters for self.nameValidator)
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
         info = "\ncreating config:"
@@ -82,6 +82,7 @@ class Config:
         self.machines = machines
 
 
+# gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
 class Menu:
     # creates the to-be-printed-string by prefixing the return-value of "self.buildMenu" with the instances name (+ "\n") 
     def __init__(self, name, options):
