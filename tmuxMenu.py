@@ -207,6 +207,8 @@ def main():
             result()
         
 
+# the task thats gonna be executed (which this entire thing is about),
+# going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
 def operation(targets):
     for target in targets:
         print(target)
