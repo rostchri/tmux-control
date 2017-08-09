@@ -12,11 +12,13 @@ class Config:
         self.machines = {}
         self.name = name
         self.file = os.path.join(configDir, self.name + ".txt")
-        if self.file in os.listdir(configDir):
+        if name + ".txt" in os.listdir(configDir):
             with open(self.file, "r") as f:
-                ids, infos = self.parseConfig(f.readlines())
-            for i, id in enumerate(ids):
-                self.machines[id] = infos[i]
+                machines = self.parseConfig(f.read()[:-1].split(";"))
+            for machine in machines:
+                self.machines[machine[0]] = machine[1]
+            for machine in self.machines:
+                print("machine: " + machine + ", infos:" + self.machines[machine])
         else:
             self.data = self.create()
 
@@ -139,11 +141,13 @@ def getConfigs():
     cfgs = []
     for f in os.listdir(configDir):
         if not "DS_Store" in f:
-            cfgs.append([f],[os.path.join(configDir, f)])
-
-    configMenu = Menu("testConfig", cfgs)
-    chosenConfig = "testConfig"
-    sessionConfig = Config(chosenConfig)
+            cfgs.append([f,os.path.join(configDir, f)])
+    print("These are the existing configs:")
+    for i, cfg in enumerate(cfgs):
+        print("{0}: {1}".format(i+1, cfg[0][:-4]))
+    cmd = input("enter the number of the config you'd like to use, or a new name to create a new one)!\n{0}".format(prompt))
+    configMenu = Menu(cmd, cfgs)
+    sessionConfig = Config(cmd)
 
 
 def getStart():
