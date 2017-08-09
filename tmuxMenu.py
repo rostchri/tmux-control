@@ -125,8 +125,7 @@ def app():
     if __name__ == "__main__":
         prompt = buildPrompt()
         print("Welcome to tmuxControl!")
-        while 1:
-            main()
+        main()
 
 
 # casts "whoami" and "hostname" to os, builds and returns a prompt
@@ -185,8 +184,8 @@ def launchSession(operation, targets):
     print("launch successful!")
 
 
-# instantiates the mainMenu-object (of the Menu-class) with the initial menu-options it receives from getStart (which just returns a static dict)
-# then loops the main-menu-launch and executes the returned function
+# instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
+# then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu = getStart()
     mainMenu = Menu("Main Menu", startMenu)
