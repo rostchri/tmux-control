@@ -65,7 +65,7 @@ class Config:
             elif cmd == "n":
                 target = input(secondPrompt)
             elif cmd == "q":
-                sys.exit()
+                exitApp()
             else:
                 print("not a valid command: %s"%(cmd))
         return(result)
@@ -87,32 +87,25 @@ class Menu:
         for i, option in enumerate(self.options):
             self.menuDict[i] = option
             self.menuDict[i][0] = "{0}".format(self.menuDict[i][0])
-        i = 0
-        self.text = ""
-        for option in self.menuDict:
-                self.text += "{0}: {1}\n".format(i+1, self.menuDict[option][0])
-                i+=1
-        return(self.text)
+        text = ""
+        for i, option in enumerate(self.menuDict):
+                text += "{0}: {1}\n".format(i+1, self.menuDict[option][0])
+        return(text)
 
     def launch(self):
         cmd = None
-        if len(self.menuDict) == 1:
-            handle(self.menuDict[0][1])
-            return(0)
         while cmd not in range(len(self.menuDict)):
             print(self.text)
             cmd = input(prompt)
             if cmd == "q":
-                return(sys.exit())
-            try:
-                int(cmd)
+                return(exitApp())
+            if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
+                    print(self.menuDict[int(cmd)-1])
                     handle(self.menuDict[int(cmd)-1][1])
                     return(self.menuDict[int(cmd)-1])
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
-            except:
-                print("your cmd was not accepted:\n{0}\nplease enter a valid command (a number between 1 and {1})".format(cmd, len(self.menuDict)))
 
     def result(self):
         return(self.name)
@@ -148,13 +141,18 @@ def getConfigs():
     for f in os.listdir(configDir):
         if not "DS_Store" in f:
             cfgs.append([f],[os.path.join(configDir, f)])
-    return(cfgs)
+
+    configMenu = Menu("testConfig", cfgs)
+    chosenConfig = "testConfig"
+    sessionConfig = Config(chosenConfig)
 
 
 def getStart():
     startMenu = [
-        #["edit config", sessionConfig.edit]
         ["launch tmux-session with config", launchSession],
+        ["manage config", getConfigs],
+        ["stop the app", exitApp],
+
     ]
     return(startMenu)
 
@@ -168,16 +166,18 @@ def launchSession():
 
 
 def main():
-    configMenu = Menu("testConfig", getConfigs())
-    chosenConfig = "TOBEDETERMINED"
-    sessionConfig = Config(chosenConfig)
-
     startMenu = getStart()
     mainMenu = Menu("start menu", startMenu)
     run = 1
+
     while run != 0:
         run = mainMenu.launch()
         return(run)
+
+
+def exitApp():
+    print("goodbye")
+    sys.exit(0)
 
 
 app()
