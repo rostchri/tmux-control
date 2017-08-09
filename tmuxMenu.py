@@ -33,15 +33,12 @@ class Config:
                 try:
                     machines = self.parseConfig(cmd.split(";"))
                     for id, info in machines:
-                        id, info = id, info
                         self.machines[id] = info
                 except TypeError as e:
                     print("something went wrong!\ninput: {0}".format(cmd))
-        print("alright, your machines:")
-        print(self.machines)
             
     def create(self):
-        cmd, reading, self.rawLines = str, 1, []
+        cmd, reading, self.rawInfo = str, 1, []
         info = "creating config:"
         initPrompt = "Is that name correct? (y/n)\n" + prompt
         secondPrompt = "Enter a new name for the config please"
@@ -51,14 +48,12 @@ class Config:
     def edit(self):
         pass
 
-    def parseConfig(self, rawLines):
-        for line in rawLines:
-            #print(line)
+    def parseConfig(self, rawInfo):
+        for line in rawInfo:
             machine = line.split(",", 2)
             yield(machine)
             
         
-
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
         while not validated:
@@ -89,9 +84,9 @@ class Menu:
         self.text = self.buildMenu()
 
     def buildMenu(self):
-        for option in self.options:
-            self.menuDict[self.options.index(option)] = option
-            self.menuDict[self.options.index(option)][0] = "{0}".format(self.menuDict[self.options.index(option)][0])
+        for i, option in enumerate(self.options):
+            self.menuDict[i] = option
+            self.menuDict[i][0] = "{0}".format(self.menuDict[i][0])
         i = 0
         self.text = ""
         for option in self.menuDict:
