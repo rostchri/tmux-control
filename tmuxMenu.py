@@ -23,9 +23,9 @@ class Config:
             self.data = self.create()
 
     def build(self):
+        print("\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.")
         reading = True
         while reading:
-            print("enter your config-content!\nsyntax: machine,info;machine,info [...]")
             cmd = input(prompt)
             if cmd == "q":
                 reading = False
@@ -35,12 +35,12 @@ class Config:
                     for id, info in machines:
                         self.machines[id] = info
                 except TypeError as e:
-                    print("something went wrong!\ninput: {0}".format(cmd))
+                    print("TypeError!\ninput: {0}".format(cmd))
             
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
-        info = "creating config:"
-        initPrompt = "Is that name correct? (y/n)\n" + prompt
+        info = "\ncreating config:"
+        initPrompt = "Is that name correct? (y/n)\n{0}".format(prompt)
         secondPrompt = "Enter a new name for the config please"
         self.name = self.nameValidator(info, initPrompt, secondPrompt, self.name)
         self.build()
@@ -80,7 +80,7 @@ class Menu:
         self.menuDict = {}
         self.name = name
         self.options = options
-        self.text = self.buildMenu()
+        self.text = name + "\n" + self.buildMenu()
 
     def buildMenu(self):
         for i, option in enumerate(self.options):
@@ -94,15 +94,12 @@ class Menu:
     def launch(self):
         cmd = None
         while cmd not in range(len(self.menuDict)):
-            print(self.text)
+            print("\n" + self.text[:-1])
             cmd = input(prompt)
-            if cmd == "q":
-                return(exitApp())
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
-                    print(self.menuDict[int(cmd)-1])
                     handle(self.menuDict[int(cmd)-1][1])
-                    return(self.menuDict[int(cmd)-1])
+                    #return(self.menuDict[int(cmd)-1])
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
 
@@ -114,6 +111,7 @@ def app():
     global prompt
     if __name__ == "__main__":
         prompt = buildPrompt()
+        print("Welcome to tmuxControl!")
         while 1:
             main()
 
@@ -124,15 +122,15 @@ def buildPrompt():
         promptInfo = f.readlines()
         currentUser = promptInfo[0][:-1]
         currentMachine = promptInfo[1][:-1]
-    return("{0}@{1}:".format(currentUser, currentMachine))
+    return("\n{0}@{1}:".format(currentUser, currentMachine))
 
 
 def functionA():
-    print("You called function 1")
+    print("\nYou called function 1")
 
 
 def functionB():
-    print("You called function 2")
+    print("\nYou called function 2")
 
 
 def getConfigs():
@@ -161,12 +159,12 @@ def handle(func):
 
 
 def launchSession():
-    print("session launched")
+    print("\nsession launched")
 
 
 def main():
     startMenu = getStart()
-    mainMenu = Menu("start menu", startMenu)
+    mainMenu = Menu("Main Menu", startMenu)
     run = 1
 
     while run != 0:
