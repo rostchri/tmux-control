@@ -1,5 +1,3 @@
-#! /usr/local/bin/python3
-
 import libtmux
 import os
 import sys
@@ -99,7 +97,6 @@ class Menu:
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
                     handle(self.menuDict[int(cmd)-1][1])
-                    #return(self.menuDict[int(cmd)-1])
                 else:
                     print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
 
@@ -149,7 +146,6 @@ def getStart():
         ["launch tmux-session with config", launchSession],
         ["manage config", getConfigs],
         ["stop the app", exitApp],
-
     ]
     return(startMenu)
 
@@ -165,11 +161,9 @@ def launchSession():
 def main():
     startMenu = getStart()
     mainMenu = Menu("Main Menu", startMenu)
-    run = 1
-
-    while run != 0:
-        run = mainMenu.launch()
-        return(run)
+    run = True
+    while run:
+        mainMenu.launch()
 
 
 def exitApp():
