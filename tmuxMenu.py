@@ -14,9 +14,8 @@ class Config:
 
     # builds a new config via user-input, returns dict in desired format
     def build(self):
-        machines = {}
+        machines, reading = {}, True
         print("\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.")
-        reading = True
         while reading:
             cmd = input(prompt)
             if cmd == "q":
@@ -34,7 +33,7 @@ class Config:
     # (and creates the parameters for self.nameValidator)
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
-        info = "\ncreating config:"
+        info = "\ncreating config"
         initPrompt = "Is that name correct? (y/n)\n{0}".format(prompt)
         secondPrompt = "Enter a new name for the config please.\n"
         target = input("Name the new config please!\n" + prompt)
@@ -149,7 +148,7 @@ def exitApp():
 
 # reads the json-files in configDir, calls menu (for picking an existing or creating a new config)
 def getConfig():
-    cfgs = [["Create new config", "new config"]]
+    cfgs = [["Create new config", ""]]
     for f in os.listdir(configDir):
         if "json" in f:
             cfgs.append([f[:-5], f])
