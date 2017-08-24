@@ -1,9 +1,9 @@
 #! /usr/local/bin/python3
 
-import frontend
-import json
+from frontend import launch as l
 import libtmux
 import os
+import tmSettings
 import sys
 
 configDir = "configs"
@@ -180,7 +180,10 @@ def getStart():
         ["Manage config", getConfig],
         ["Stop the app", exitApp],
     ]
-    return(startMenu)
+    startKeys = []
+    for x in startMenu:
+        startKeys.append(x[0])
+    return(startMenu, startKeys)
 
 
 # will return the targets to perform tmux-operations on
@@ -199,7 +202,8 @@ def launchSession(operation, targets):
 # instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
 # then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
-    startMenu = getStart()
+    startMenu, startKeys = getStart()
+    l(startKeys, tmSettings.green, tmSettings.blue, tmSettings.black, tmSettings.yellow)
     mainMenu = Menu("Main Menu", startMenu)
     run = True
     while run:

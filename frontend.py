@@ -1,24 +1,7 @@
 #!/usr/bin/python
 
 import curses
-
-
-appName = 'tmuxControl'
-appVersion = 'v0.1'
-
-release = '{0} {1}'.format(appName, appVersion)
-gitLink = 'https://github.com/2357mam/tmuxControl'
-footer = 'source: {0}'.format(gitLink)
-
-# assigning colors
-red = curses.COLOR_RED
-green = curses.COLOR_GREEN
-blue = curses.COLOR_BLUE
-yellow = curses.COLOR_YELLOW
-black = curses.COLOR_BLACK        
-magenta = curses.COLOR_MAGENTA
-cyan = curses.COLOR_CYAN
-white = curses.COLOR_WHITE
+import tmSettings
 
 
 # iterates through the menu-contents dict:
@@ -97,10 +80,10 @@ def initSession():
     content = ['foo', 'bar', 'baz']
 
     # assigning handy vars to neutral parameters
-    inactiveColor = green
-    windowBg = green
-    boxText = black
-    boxBg = green
+    inactiveColor = tmSettings.green
+    windowBg = tmSettings.green
+    boxText = tmSettings.black
+    boxBg = tmSettings.green
 
     launch(content, inactiveColor, windowBg, boxText, boxBg)
 
@@ -115,9 +98,9 @@ def killBox(stdscr):
 
 def launch(content, inactiveColor, windowBg, boxText, boxBg):
     contentDict = {
-        'header' : [release],
+        'header' : [tmSettings.release],
         'content' : content,
-        'footer' : [footer]
+        'footer' : [tmSettings.footer]
     }
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)
