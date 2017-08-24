@@ -3,10 +3,9 @@
 from frontend import launch as l
 import libtmux
 import os
-import tmSettings
+import tmcSettings
 import sys
 
-configDir = "configs"
 server = libtmux.Server()
 
 
@@ -77,7 +76,7 @@ class Config:
 
     # saves the current configuration
     def save(self):
-        self.file = os.path.join(configDir, self.name + ".json")
+        self.file = os.path.join(tmcSettings.tmcSettings.configDir, self.name + ".json")
         with open(self.file, "w") as f:
             json.dump(self.machines, f)
 
@@ -149,17 +148,17 @@ def exitApp():
     sys.exit(0)
 
 
-# reads the json-files in configDir, calls menu (for picking an existing or creating a new config)
+# reads the json-files in tmcSettings.configDir, calls menu (for picking an existing or creating a new config)
 def getConfig():
     cfgs = [["Create new config", ""]]
-    for f in os.listdir(configDir):
+    for f in os.listdir(tmcSettings.configDir):
         if "json" in f:
             cfgs.append([f[:-5], f])
     configMenu = Menu("Config Menu", cfgs)
     chosenConfig = configMenu.launch()
     currentConfig = Config(chosenConfig)
-    if chosenConfig in os.listdir(configDir):
-        configFile = os.path.join(configDir, chosenConfig)
+    if chosenConfig in os.listdir(tmcSettings.configDir):
+        configFile = os.path.join(tmcSettings.configDir, chosenConfig)
         with open(configFile, "r") as f:
             machines = json.load(f)   
         currentConfig.setData(configFile, machines)
@@ -203,7 +202,7 @@ def launchSession(operation, targets):
 # then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu, startKeys = getStart()
-    l(startKeys, tmSettings.green, tmSettings.blue, tmSettings.black, tmSettings.yellow)
+    l(startKeys, tmcSettings.green, tmcSettings.blue, tmcSettings.black, tmcSettings.yellow)
     mainMenu = Menu("Main Menu", startMenu)
     run = True
     while run:

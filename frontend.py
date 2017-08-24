@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import curses
-import tmSettings
+import tmcSettings
 
 
 # iterates through the menu-contents dict:
@@ -80,10 +80,10 @@ def initSession():
     content = ['foo', 'bar', 'baz']
 
     # assigning handy vars to neutral parameters
-    inactiveColor = tmSettings.green
-    windowBg = tmSettings.green
-    boxText = tmSettings.black
-    boxBg = tmSettings.green
+    inactiveColor = tmcSettings.green
+    windowBg = tmcSettings.green
+    boxText = tmcSettings.black
+    boxBg = tmcSettings.green
 
     launch(content, inactiveColor, windowBg, boxText, boxBg)
 
@@ -98,9 +98,9 @@ def killBox(stdscr):
 
 def launch(content, inactiveColor, windowBg, boxText, boxBg):
     contentDict = {
-        'header' : [tmSettings.release],
+        'header' : [tmcSettings.release],
         'content' : content,
-        'footer' : [tmSettings.footer]
+        'footer' : [tmcSettings.footer]
     }
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)

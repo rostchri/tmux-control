@@ -16,3 +16,5 @@ black = curses.COLOR_BLACK
 magenta = curses.COLOR_MAGENTA
 cyan = curses.COLOR_CYAN
 white = curses.COLOR_WHITE
+
+configDir = "configs"
