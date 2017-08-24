@@ -76,15 +76,6 @@ def initCurses(inactiveColor, windowBg, boxText, boxBg):
     return stdscr
 
 
-def sampleSession():
-    content = ['foo', 'bar', 'baz']
-    inactiveColor = tmcSettings.green
-    windowBg = tmcSettings.blue
-    boxText = tmcSettings.white
-    boxBg = tmcSettings.blue
-    launch(content, inactiveColor, windowBg, boxText, boxBg)
-
-
 # terminates the box
 def killBox(stdscr):
     curses.nocbreak()
@@ -94,18 +85,15 @@ def killBox(stdscr):
 
 
 def launch(menu, inactiveColor, windowBg, boxText, boxBg):
-    content = []
-    for x in menu:
-        content.append(x[0])
-    with open('tmuxControl.log', 'w') as f:
-        for x in content:
-            f.write(str(x))
+    #takes keys from received menu as list for dict (see below)
+    content = [x[0] for x in menu]
 
     contentDict = {
         'header' : [tmcSettings.release],
         'content' : content,
         'footer' : [tmcSettings.footer]
     }
+
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)
     # waits for keypress (so the program doesnt just terminate while being WIP)
@@ -132,7 +120,3 @@ def makeBox(contentDict):
         win.addstr(line[0] -2, 2, line[1]) 
     win.box()
     win.refresh()
-
-
-if __name__ == '__main__':
-    sampleSession()
