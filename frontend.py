@@ -25,7 +25,7 @@ white = curses.COLOR_WHITE
 #   determining height/ width of the desired box
 #   creating a dict that holds line-numbers and corresponding values
 #   returns those three vars (height, width, {lines + content})
-def getBoxProperties():
+def getBoxProperties(contentDict):
     propertyDict = {}
     boxHeight = 0
     boxWidth = 0
@@ -80,38 +80,29 @@ def incrementVars(x):
 
 
 # default initialization, receives two pairs of colours (defined at the top of this document)
-def initCurses(c1, c2, c3, c4):
+def initCurses(inactiveColor, windowBg, boxText, boxBg):
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
     stdscr.keypad(1)
     curses.start_color()
-    curses.init_pair(1, c1, c2)
-    curses.init_pair(2, c3, c4)
+    curses.init_pair(1, inactiveColor, windowBg)
+    curses.init_pair(2, boxText, boxBg)
     stdscr.bkgd(curses.color_pair(1))
     stdscr.refresh()
     return stdscr
 
 
 def initSession():
-    # dict holding the menu-layout-categories (header content footer)
-    contentDict = {
-        'header' : [release],
-        'content' : [
-            'foo',
-            'bar',
-            'baz'
-        ],
-        'footer' : [footer]
-    }
+    content = ['foo', 'bar', 'baz']
 
     # assigning handy vars to neutral parameters
-    c1 = green
-    c2 = green
-    c3 = black
-    c4 = green
+    inactiveColor = green
+    windowBg = green
+    boxText = black
+    boxBg = green
 
-    launch(contentDict, c1, c2, c3, c4)
+    launch(content, inactiveColor, windowBg, boxText, boxBg)
 
 
 # terminates the box
@@ -122,10 +113,14 @@ def killBox(stdscr):
     curses.endwin()
 
 
-# c1= inactive, c2=windowBg, c3=boxText, c4=boxBg
-def launch(contentDict, c1, c2, c3, c4):
-    stdscr = initCurses(c1, c2, c3, c4)
-    makeBox()
+def launch(content, inactiveColor, windowBg, boxText, boxBg):
+    contentDict = {
+        'header' : [release],
+        'content' : content,
+        'footer' : [footer]
+    }
+    stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
+    makeBox(contentDict)
     # waits for keypress (so the program doesnt just terminate while being WIP)
     c = stdscr.getch()
     killBox(stdscr)
@@ -134,8 +129,8 @@ def launch(contentDict, c1, c2, c3, c4):
 # builds the actual menu:
 #   1. gets the properties by calling getBoxProperties
 #   2. adds the strings to their respective places and refreshes the window
-def makeBox():
-    propertyDict, boxHeight, boxWidth = getBoxProperties()
+def makeBox(contentDict):
+    propertyDict, boxHeight, boxWidth = getBoxProperties(contentDict)
     win = curses.newwin(boxHeight + 2, boxWidth, 5, 35)
     win.bkgd(curses.color_pair(2))
     for line in propertyDict['header']:
