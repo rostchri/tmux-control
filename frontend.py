@@ -60,10 +60,7 @@ def getBoxProperties():
         line, boxHeight = map(incrementVars,[line, boxHeight])
         if len(var) > boxWidth:
             boxWidth = len(var)
-    boxContent[category].append([line, '---'])
-    line, boxHeight = map(incrementVars,[line, boxHeight])
         
-    boxHeight += 1
     boxWidth += 4
     return boxContent, boxHeight, boxWidth
 
