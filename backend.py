@@ -1,5 +1,6 @@
 #! /usr/local/bin/python3
 
+import frontend
 import json
 import libtmux
 import os
@@ -17,7 +18,7 @@ class Config:
     # builds a new config via user-input, returns dict in desired format
     def build(self):
         machines, reading = {}, True
-        print("\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.")
+        cfgPrompt = "\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode."
         while reading:
             cmd = input(prompt)
             if cmd == "q":
@@ -112,13 +113,13 @@ class Menu:
     def launch(self):
         cmd = None
         while cmd not in range(len(self.menuDict)):
-            print("\n" + self.text[:-1])
+            msg = "\n" + self.text[:-1]
             cmd = input(prompt)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
                     return(self.menuDict[int(cmd)-1][1])
                 else:
-                    print("your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict)))
+                    errMsg = "your answer {0} was not in range! (min 1, max {1})".format(cmd, len(self.menuDict))
         return(self.name)
 
 
@@ -128,7 +129,7 @@ def app():
     global prompt
     if __name__ == "__main__":
         prompt = buildPrompt()
-        print("Welcome to tmuxControl!")
+        welcomeMsg = "Welcome to tmuxControl!"
         main()
 
 
@@ -144,7 +145,7 @@ def buildPrompt():
 
 # says Goodbye and quits program
 def exitApp():
-    print("\nGoodbye")
+    goodbyeMsg = "\nGoodbye"
     sys.exit(0)
 
 
@@ -168,7 +169,7 @@ def getConfig():
 
 # will return the tmux-operation(s) to perform on targets
 def getOperation():
-    return(print)
+    return(pass)
 
 
 # initializes the startMenu-options (returns list of lists)
@@ -191,7 +192,7 @@ def getTargets():
 # and a task (for now: ssh-logins (with the included info))
 def launchSession(operation, targets):
     operation(targets)
-    print("launch successful!")
+    launchMsg = "launch successful!"
 
 
 # instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
@@ -214,8 +215,8 @@ def main():
 # going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
 def operation(targets):
     for target in targets:
-        print(target)
-    print("launch successful!")
+        msgTarget = target
+    launchSuccessMsg = "launch successful!"
 
 
 app()
