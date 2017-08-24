@@ -169,7 +169,8 @@ def getConfig():
 
 # will return the tmux-operation(s) to perform on targets
 def getOperation():
-    return(pass)
+    operation = lambda:None
+    return(operation)
 
 
 # initializes the startMenu-options (returns list of lists)
