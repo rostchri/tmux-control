@@ -76,15 +76,12 @@ def initCurses(inactiveColor, windowBg, boxText, boxBg):
     return stdscr
 
 
-def initSession():
+def sampleSession():
     content = ['foo', 'bar', 'baz']
-
-    # assigning handy vars to neutral parameters
     inactiveColor = tmcSettings.green
-    windowBg = tmcSettings.green
-    boxText = tmcSettings.black
-    boxBg = tmcSettings.green
-
+    windowBg = tmcSettings.blue
+    boxText = tmcSettings.white
+    boxBg = tmcSettings.blue
     launch(content, inactiveColor, windowBg, boxText, boxBg)
 
 
@@ -96,7 +93,14 @@ def killBox(stdscr):
     curses.endwin()
 
 
-def launch(content, inactiveColor, windowBg, boxText, boxBg):
+def launch(menu, inactiveColor, windowBg, boxText, boxBg):
+    content = []
+    for x in menu:
+        content.append(x[0])
+    with open('tmuxControl.log', 'w') as f:
+        for x in content:
+            f.write(str(x))
+
     contentDict = {
         'header' : [tmcSettings.release],
         'content' : content,
@@ -131,4 +135,4 @@ def makeBox(contentDict):
 
 
 if __name__ == '__main__':
-    initSession()
+    sampleSession()

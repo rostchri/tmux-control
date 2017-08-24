@@ -177,12 +177,9 @@ def getStart():
     startMenu = [
         ["Launch tmux-session with config", launchSession],
         ["Manage config", getConfig],
-        ["Stop the app", exitApp],
+        ["Stop the app", exitApp]
     ]
-    startKeys = []
-    for x in startMenu:
-        startKeys.append(x[0])
-    return(startMenu, startKeys)
+    return(startMenu)
 
 
 # will return the targets to perform tmux-operations on
@@ -201,8 +198,8 @@ def launchSession(operation, targets):
 # instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
 # then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
-    startMenu, startKeys = getStart()
-    l(startKeys, tmcSettings.green, tmcSettings.blue, tmcSettings.black, tmcSettings.yellow)
+    startMenu = getStart()
+    l(startMenu, tmcSettings.green, tmcSettings.green, tmcSettings.white, tmcSettings.green)
     mainMenu = Menu("Main Menu", startMenu)
     run = True
     while run:
