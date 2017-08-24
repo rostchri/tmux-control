@@ -1,9 +1,12 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import curses
 
 
+
+# Variables
+
+# dict holding the menu-layout-categories (header content footer)
 boxContainer = {
     'header' : ['tmux Control 0.1'],
     'content' : [
@@ -14,11 +17,27 @@ boxContainer = {
     'footer' : ['tcFooter']
 }
 
+# assigning some colors to handy vars
+green = curses.COLOR_GREEN
+blue = curses.COLOR_BLUE
+yellow = curses.COLOR_YELLOW
+black = curses.COLOR_BLACK
+
+# assigning handy vars to neutral parameters
+c1 = green
+c2 = blue
+c3 = yellow
+c4 = black
+
 
 def incrementVars(x):
     return x+1
 
 
+# iterates through the menu-contents dict:
+#   determining height/ width of the desired box
+#   creating a dict that holds line-numbers and corresponding values
+#   returns those three vars (height, width, {lines + content})
 def getBoxProperties():
     boxContent = {}
     boxHeight = 0
@@ -65,6 +84,9 @@ def getBoxProperties():
     return boxContent, boxHeight, boxWidth
 
 
+# builds the actual menu:
+#   1. gets the properties by calling getBoxProperties
+#   2. adds the strings to their respective places and refreshes the window
 def makeBox():
     boxContent, boxHeight, boxWidth = getBoxProperties()
     win = curses.newwin(boxHeight + 2, boxWidth, 5, 35)
@@ -85,22 +107,23 @@ def makeBox():
 
     win.box()
     win.refresh()
-    print(boxContent)
 
 
-def initCurses():
+# default initialization, receives two pairs of colours (defined at the top of this document)
+def initCurses(c1, c2, c3, c4):
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
     stdscr.keypad(1)
     curses.start_color()
-    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLUE)
-    curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(1, c1, c2)
+    curses.init_pair(2, c3, c4)
     stdscr.bkgd(curses.color_pair(1))
     stdscr.refresh()
     return stdscr
 
 
+# terminates the box
 def killBox():
     curses.nocbreak()
     stdscr.keypad(0)
@@ -108,10 +131,11 @@ def killBox():
     curses.endwin()
 
 
-stdscr = initCurses()
+stdscr = initCurses(c1, c2, c3, c4)
 
 makeBox()
 
+# waits for keypress (so the program doesnt just terminate while being WIP)
 c = stdscr.getch()
 
 killBox()
