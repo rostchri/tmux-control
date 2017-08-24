@@ -1,7 +1,5 @@
-#!/usr/bin/python
-
 import curses
-import tmcSettings
+import TmuxControlSettings
 
 
 # iterates through the menu-contents dict:
@@ -89,9 +87,9 @@ def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     content = [x[0] for x in menu]
 
     contentDict = {
-        'header' : [tmcSettings.release],
+        'header' : [TmuxControlSettings.release],
         'content' : content,
-        'footer' : [tmcSettings.footer]
+        'footer' : [TmuxControlSettings.footer]
     }
 
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
