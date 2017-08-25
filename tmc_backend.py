@@ -118,6 +118,7 @@ class Menu:
                     return(self.menuDict[int(cmd)-1][1])
                 else:
                     errMsg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menuDict))
+                    launchUI(msg)
         return(self.name)
 
 
@@ -128,6 +129,7 @@ def app():
     prompt = buildPrompt()
     server = libtmux.Server()
     welcomeMsg = 'Welcome to tmuxControl!'
+    launchUI(welcomeMsg)
     main()
 
 
@@ -145,6 +147,7 @@ def buildPrompt():
 # Says Goodbye and quits program
 def exitApp():
     goodbyeMsg = '\nGoodbye'
+    launchUI(goodbyeMsg)
     sys.exit(0)
 
 
@@ -192,6 +195,7 @@ def getTargets():
 def launchSession(operation, targets):
     #operation(targets)
     launchMsg = 'launch successful!'
+    launchUI(launchMsg)
 
 
 def launchUI(content):
@@ -226,3 +230,4 @@ def operation(targets):
     for target in targets:
         msgTarget = target
     launchSuccessMsg = 'launch successful!'
+    launchUI(launchSuccessMsg)
