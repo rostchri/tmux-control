@@ -112,7 +112,7 @@ class Menu:
         cmd = None
         while cmd not in range(len(self.menuDict)):
             msg = '\n' + self.text[:-1]
-            cmd = raw_input(prompt)
+            cmd = launchUI(msg)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
                     return(self.menuDict[int(cmd)-1][1])
@@ -151,7 +151,7 @@ def exitApp():
 # Reads the json-files in tcs.configDir, calls menu (for picking an existing or creating a new config)
 def getConfig():
     cfgs = [['Create new config', '']]
-    for f in os.listdir(tcs.configDir):
+    for f in os.listdir(tcs.CONFIG_DIR):
         if 'json' in f:
             cfgs.append([f[:-5], f])
     configMenu = Menu('Config Menu', cfgs)
@@ -195,6 +195,8 @@ def launchSession(operation, targets):
 
 
 def launchUI(content):
+    if type(content) == str:
+        content = [[content, getConfig]]
     cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
     return(cmd)
 
@@ -206,16 +208,16 @@ def launchUI(content):
 def main():
     startMenu = getStart()
     cmd = launchUI(startMenu)
-    #mainMenu = Menu('Main Menu', startMenu)
-    #run = True
-    #while run:
-    #    result = mainMenu.launch()
-    #    if 'launchSession' in str(result):
-    #        operation = getOperation()
-    #        targets = getTargets()
-    #        launchSession(operation, targets)
-    #    else:
-    #        result()
+    mainMenu = Menu('Main Menu', startMenu)
+    run = True
+    while run:
+        result = mainMenu.launch()
+        if 'launchSession' in str(result):
+            operation = getOperation()
+            targets = getTargets()
+            launchSession(operation, targets)
+        else:
+            result()
         
 
 # The task thats gonna be executed (which this entire thing is about),
