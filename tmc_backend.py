@@ -4,8 +4,8 @@ import sys
 
 import libtmux
 
-from TmuxControlUI import launch as l
-import TmuxControlSettings as tcs
+from tmc_ui import launch as l
+import tmc_settings as tcs
 
 
 class Config:

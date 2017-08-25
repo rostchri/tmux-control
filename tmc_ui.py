@@ -1,6 +1,6 @@
 import curses
 
-import TmuxControlSettings as tcs
+import tmc_settings as tcs
 
 
 # Iterates through the menu-contents dict:
