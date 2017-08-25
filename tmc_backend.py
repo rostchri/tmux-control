@@ -27,7 +27,10 @@ class Config:
                     for id, info in segments:
                         machines[id] = info
                 except:
-                    print('Input must be splittable into by-comma-splittable segments with semicolons!\nInput was:\n{0}'.format(cmd))
+                    errMsg = """Input must be splittable into by-comma-splittable segments with semicolons!
+                    Input was:
+                    {0}'.format(cmd))"""
+                    launchUI(errMsg)
         return(machines)
             
     # Returns a validated (by self.nameValidator) name for the config
@@ -58,7 +61,8 @@ class Config:
             elif cmd == 'n':
                 target = input(secondPrompt)
             else:
-                print('not a valid command: %s'%(cmd))
+                errMsg = 'not a valid command: {0}'.format(cmd)
+                launchUI(errMsg)
         return(result)
 
     # Self-explaining (no?) - calls for naming, building and saving of new config
@@ -110,7 +114,7 @@ class Menu:
     # On valid input, returns the according value to the chosen option
     def launch(self):
         cmd = None
-        while cmd not in range(len(self.menuDict)):
+        while not cmd in range(len(self.menuDict)):
             msg = '\n' + self.text[:-1]
             cmd = launchUI(msg)
             if cmd.isdigit():
@@ -135,12 +139,13 @@ def app():
 
 # Casts 'whoami' and 'hostname' to os, builds and returns a prompt
 def buildPrompt():
-    os.system('whoami > {0} && hostname >> {0}'.format('files/promptInfo.txt'))
-    with open('files/promptInfo.txt', 'r') as f:
+    promptInfoFile = 'files/promptInfo.txt'
+    os.system('whoami > {0} && hostname >> {0}'.format(promptInfoFile))
+    with open(promptInfoFile, 'r') as f:
         promptInfo = f.readlines()
         currentUser = promptInfo[0][:-1]
         currentMachine = promptInfo[1][:-1]
-    os.unlink('files/promptInfo.txt')
+    os.unlink(promptInfoFile)
     return('\n{0}@{1}:'.format(currentUser, currentMachine))
 
 
