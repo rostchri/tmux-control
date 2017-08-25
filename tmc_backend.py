@@ -4,7 +4,7 @@ import sys
 
 import libtmux
 
-from tmc_ui import launch as l
+import tmc_ui as tcui
 import tmc_settings as tcs
 
 
@@ -195,7 +195,7 @@ def launchSession(operation, targets):
 
 
 def launchUI(content):
-    l(content, tcs.green, tcs.green, tcs.black, tcs.green)
+    tcui.launch(content, tcs.green, tcs.green, tcs.black, tcs.green)
 
 
 # Instantiates the mainMenu-object (of the Menu-class) with the initial menu-options
