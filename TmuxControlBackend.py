@@ -1,11 +1,11 @@
-from TmuxControlUI import launch as l
 import json
-import libtmux
 import os
 import sys
-import TmuxControlSettings as tcs
 
-server = libtmux.Server()
+import libtmux
+
+from TmuxControlUI import launch as l
+import TmuxControlSettings as tcs
 
 
 class Config:
@@ -126,6 +126,7 @@ class Menu:
 def app():
     global prompt
     prompt = buildPrompt()
+    server = libtmux.Server()
     welcomeMsg = 'Welcome to tmuxControl!'
     main()
 
@@ -189,15 +190,18 @@ def getTargets():
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
 def launchSession(operation, targets):
-    #operation(targets)
     launchMsg = 'launch successful!'
+
+
+def launchUI(content):
+    l(content, tcs.green, tcs.green, tcs.black, tcs.green)
 
 
 # instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
 # then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu = getStart()
-    l(startMenu, tcs.green, tcs.green, tcs.black, tcs.green)
+    launchUI(startMenu)
     mainMenu = Menu('Main Menu', startMenu)
     run = True
     while run:
