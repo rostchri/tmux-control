@@ -88,9 +88,9 @@ def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     content = [x[0] for x in menu]
 
     contentDict = {
-        'header' : [tcs.release],
+        'header' : [tcs.RELEASE],
         'content' : content,
-        'footer' : [tcs.footer]
+        'footer' : [tcs.FOOTER]
     }
 
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)

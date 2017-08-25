@@ -1,20 +1,20 @@
 import curses
 
-appName = 'tmuxControl'
-appVersion = 'v0.1'
+APP_NAME = 'tmuxControl'
+APP_VERSION = 'v0.1'
 
-release = '{0} {1}'.format(appName, appVersion)
-gitLink = 'https://github.com/2357mam/tmuxControl'
-footer = 'source: {0}'.format(gitLink)
+RELEASE = '{0} {1}'.format(APP_NAME, APP_VERSION)
+GIT_LINK = 'https://github.com/2357mam/tmuxControl'
+FOOTER = 'source: {0}'.format(GIT_LINK)
 
 # assigning colors
-red = curses.COLOR_RED
-green = curses.COLOR_GREEN
-blue = curses.COLOR_BLUE
-yellow = curses.COLOR_YELLOW
-black = curses.COLOR_BLACK        
-magenta = curses.COLOR_MAGENTA
-cyan = curses.COLOR_CYAN
-white = curses.COLOR_WHITE
+RED = curses.COLOR_RED
+GREEN = curses.COLOR_GREEN
+BLUE = curses.COLOR_BLUE
+YELLOW = curses.COLOR_YELLOW
+BLACK = curses.COLOR_BLACK        
+MAGENTA = curses.COLOR_MAGENTA
+CYAN = curses.COLOR_CYAN
+WHITE = curses.COLOR_WHITE
 
-configDir = "configs"
+CONFIG_DIR = "configs"

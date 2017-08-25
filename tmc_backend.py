@@ -75,7 +75,7 @@ class Config:
 
     # Saves the current configuration
     def save(self):
-        self.file = os.path.join(tcs.tcs.configDir, self.name + '.json')
+        self.file = os.path.join(tcs.CONFIG_DIR, self.name + '.json')
         with open(self.file, 'w') as f:
             json.dump(self.machines, f)
 
@@ -157,8 +157,8 @@ def getConfig():
     configMenu = Menu('Config Menu', cfgs)
     chosenConfig = configMenu.launch()
     currentConfig = Config(chosenConfig)
-    if chosenConfig in os.listdir(tcs.configDir):
-        configFile = os.path.join(tcs.configDir, chosenConfig)
+    if chosenConfig in os.listdir(tcs.CONFIG_DIR):
+        configFile = os.path.join(tcs.CONFIG_DIR, chosenConfig)
         with open(configFile, 'r') as f:
             machines = json.load(f)   
         currentConfig.setData(configFile, machines)
@@ -195,7 +195,7 @@ def launchSession(operation, targets):
 
 
 def launchUI(content):
-    tcui.launch(content, tcs.green, tcs.green, tcs.black, tcs.green)
+    tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
 
 
 # Instantiates the mainMenu-object (of the Menu-class) with the initial menu-options
