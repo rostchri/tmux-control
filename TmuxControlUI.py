@@ -3,10 +3,10 @@ import curses
 import TmuxControlSettings as tcs
 
 
-# iterates through the menu-contents dict:
-#   determining height/ width of the desired box
-#   creating a dict that holds line-numbers and corresponding values
-#   returns those three vars (height, width, {lines + content})
+# Iterates through the menu-contents dict:
+# determining height/ width of the desired box
+# creating a dict that holds line-numbers and corresponding values
+# returns those three vars (height, width, {lines + content})
 def getBoxProperties(contentDict):
     propertyDict = {}
     boxHeight = 0
@@ -61,7 +61,7 @@ def incrementVars(x):
     return x+1
 
 
-# default initialization, receives two pairs of colours (defined at the top of this document)
+# Default initialization, receives two pairs of colours (defined at the top of this document)
 def initCurses(inactiveColor, windowBg, boxText, boxBg):
     stdscr = curses.initscr()
     curses.noecho()
@@ -75,7 +75,7 @@ def initCurses(inactiveColor, windowBg, boxText, boxBg):
     return stdscr
 
 
-# terminates the box
+# Terminates the box
 def killBox(stdscr):
     curses.nocbreak()
     stdscr.keypad(0)
@@ -84,7 +84,7 @@ def killBox(stdscr):
 
 
 def launch(menu, inactiveColor, windowBg, boxText, boxBg):
-    #takes keys from received menu as list for dict (see below)
+    # Takes keys from received menu as list for dict (see below)
     content = [x[0] for x in menu]
 
     contentDict = {
@@ -95,14 +95,14 @@ def launch(menu, inactiveColor, windowBg, boxText, boxBg):
 
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)
-    # waits for keypress (so the program doesnt just terminate while being WIP)
+    # Waits for keypress (so the program doesnt just terminate while being WIP)
     c = stdscr.getch()
     killBox(stdscr)
 
 
-# builds the actual menu:
-#   1. gets the properties by calling getBoxProperties
-#   2. adds the strings to their respective places and refreshes the window
+# Builds the actual menu:
+# 1. gets the properties by calling getBoxProperties
+# 2. adds the strings to their respective places and refreshes the window
 def makeBox(contentDict):
     propertyDict, boxHeight, boxWidth = getBoxProperties(contentDict)
     win = curses.newwin(boxHeight + 2, boxWidth, 5, 35)

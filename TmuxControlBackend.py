@@ -13,7 +13,7 @@ class Config:
         self.machines = {}
         self.name = name
 
-    # builds a new config via user-input, returns dict in desired format
+    # Builds a new config via user-input, returns dict in desired format
     def build(self):
         machines, reading = {}, True
         cfgPrompt = '\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.'
@@ -30,7 +30,7 @@ class Config:
                     print('Input must be splittable into by-comma-splittable segments with semicolons!\nInput was:\n{0}'.format(cmd))
         return(machines)
             
-    # returns a validated (by self.nameValidator) name for the config
+    # Returns a validated (by self.nameValidator) name for the config
     # (and creates the parameters for self.nameValidator)
     def create(self):
         cmd, reading, self.rawInfo = str, 1, []
@@ -41,11 +41,11 @@ class Config:
         name = self.nameValidator(info, initPrompt, secondPrompt, target)
         return(name)
 
-    # will manipulate configs (add, modify or remove elements)
+    # Will manipulate configs (add, modify or remove elements)
     def edit(self):
         pass
 
-    # loops through a validating-and-replacing-process until the user-input is 'y',
+    # Loops through a validating-and-replacing-process until the user-input is 'y',
     # returns the validated variable
     def nameValidator(self, info, initPrompt, secondPrompt, target):
         validated = False
@@ -61,19 +61,19 @@ class Config:
                 print('not a valid command: %s'%(cmd))
         return(result)
 
-    # self-explaining (no?) - calls for naming, building and saving of new config
+    # Self-explaining (no?) - calls for naming, building and saving of new config
     def new(self):
         self.name = self.create()
         self.machines = self.build()
         self.save()
 
-    # splits all iterations of the passed parameter and yields the result
+    # Splits all iterations of the passed parameter and yields the result
     def parse(self, rawInfo):
         for line in rawInfo:
             machine = line.split(',', 2)
             yield(machine)
 
-    # saves the current configuration
+    # Saves the current configuration
     def save(self):
         self.file = os.path.join(tcs.tcs.configDir, self.name + '.json')
         with open(self.file, 'w') as f:
@@ -84,7 +84,7 @@ class Config:
         self.machines = machines
 
 
-# gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
+# Gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
 class Menu:
     # creates the to-be-printed-string by prefixing the return-value of 'self.buildMenu' with the instances name (+ '\n') 
     def __init__(self, name, options):
@@ -93,7 +93,7 @@ class Menu:
         self.options = options
         self.text = name + '\n' + self.buildMenu()
 
-    # builds a dict from raw options with enum-results as keys,
+    # Builds a dict from raw options with enum-results as keys,
     # comprehends that dicts content as adequate, printable menu-options,
     # returns the result as a string (n: option1 \n n+1: option2)
     def buildMenu(self):
@@ -105,9 +105,9 @@ class Menu:
                 text += '{0}: {1}\n'.format(i+1, self.menuDict[option][0])
         return(text)
 
-    # launches the menu (prints the string)
-    # loops the menu until a valid input has been made
-    # on valid input, returns the according value to the chosen option
+    # Launches the menu (prints the string)
+    # Loops the menu until a valid input has been made
+    # On valid input, returns the according value to the chosen option
     def launch(self):
         cmd = None
         while cmd not in range(len(self.menuDict)):
@@ -121,7 +121,7 @@ class Menu:
         return(self.name)
 
 
-# sets the global prompt by calling the prompt-function,
+# Sets the global prompt by calling the prompt-function,
 # prints the welcome-message, then calls the main-function
 def app():
     global prompt
@@ -131,7 +131,7 @@ def app():
     main()
 
 
-# casts 'whoami' and 'hostname' to os, builds and returns a prompt
+# Casts 'whoami' and 'hostname' to os, builds and returns a prompt
 def buildPrompt():
     os.system('whoami > {0} && hostname >> {0}'.format('files/promptInfo.txt'))
     with open('files/promptInfo.txt', 'r') as f:
@@ -142,13 +142,13 @@ def buildPrompt():
     return('\n{0}@{1}:'.format(currentUser, currentMachine))
 
 
-# says Goodbye and quits program
+# Says Goodbye and quits program
 def exitApp():
     goodbyeMsg = '\nGoodbye'
     sys.exit(0)
 
 
-# reads the json-files in tcs.configDir, calls menu (for picking an existing or creating a new config)
+# Reads the json-files in tcs.configDir, calls menu (for picking an existing or creating a new config)
 def getConfig():
     cfgs = [['Create new config', '']]
     for f in os.listdir(tcs.configDir):
@@ -166,12 +166,12 @@ def getConfig():
         currentConfig.new()
 
 
-# will return the tmux-operation(s) to perform on targets
+# Will return the tmux-operation(s) to perform on targets
 def getOperation():
     return('operation')
 
 
-# initializes the startMenu-options (returns list of lists)
+# Initializes the startMenu-options (returns list of lists)
 def getStart():
     startMenu = [
         ['Launch tmux-session with config', launchSession],
@@ -181,15 +181,16 @@ def getStart():
     return(startMenu)
 
 
-# will return the targets to perform tmux-operations on
+# Will return the targets to perform tmux-operations on
 def getTargets():
     return([x+1 for x in range(3)])
 
 
-# will launch the actual tmux-session - called with:
+# Will launch the actual tmux-session - called with:
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
 def launchSession(operation, targets):
+    #operation(targets)
     launchMsg = 'launch successful!'
 
 
@@ -197,8 +198,10 @@ def launchUI(content):
     l(content, tcs.green, tcs.green, tcs.black, tcs.green)
 
 
-# instantiates the mainMenu-object (of the Menu-class) with the initial menu-options (receives from getStart (which just returns a static dict))
-# then loops the main-menu-launch and calls the returned function (depending on the to-be-called-function, parameters may have to be called) (forever)
+# Instantiates the mainMenu-object (of the Menu-class) with the initial menu-options
+# (receives from getStart (which just returns a static dict)),
+# then loops the main-menu-launch and calls the returned function
+# (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu = getStart()
     launchUI(startMenu)
@@ -214,7 +217,7 @@ def main():
             result()
         
 
-# the task thats gonna be executed (which this entire thing is about),
+# The task thats gonna be executed (which this entire thing is about),
 # going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
 def operation(targets):
     for target in targets:
