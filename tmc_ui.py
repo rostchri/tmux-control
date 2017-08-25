@@ -96,8 +96,9 @@ def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)
     # Waits for keypress (so the program doesnt just terminate while being WIP)
-    c = stdscr.getch()
+    c = chr(stdscr.getch())
     killBox(stdscr)
+    return(c)
 
 
 # Builds the actual menu:

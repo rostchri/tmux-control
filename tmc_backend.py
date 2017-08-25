@@ -195,7 +195,8 @@ def launchSession(operation, targets):
 
 
 def launchUI(content):
-    tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
+    cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
+    return(cmd)
 
 
 # Instantiates the mainMenu-object (of the Menu-class) with the initial menu-options
@@ -204,17 +205,17 @@ def launchUI(content):
 # (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu = getStart()
-    launchUI(startMenu)
-    mainMenu = Menu('Main Menu', startMenu)
-    run = True
-    while run:
-        result = mainMenu.launch()
-        if 'launchSession' in str(result):
-            operation = getOperation()
-            targets = getTargets()
-            launchSession(operation, targets)
-        else:
-            result()
+    cmd = launchUI(startMenu)
+    #mainMenu = Menu('Main Menu', startMenu)
+    #run = True
+    #while run:
+    #    result = mainMenu.launch()
+    #    if 'launchSession' in str(result):
+    #        operation = getOperation()
+    #        targets = getTargets()
+    #        launchSession(operation, targets)
+    #    else:
+    #        result()
         
 
 # The task thats gonna be executed (which this entire thing is about),
