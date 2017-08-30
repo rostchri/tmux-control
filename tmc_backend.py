@@ -31,7 +31,7 @@ class Config:
                     Input was:
                     {0}'.format(cmd))"""
                     launchUI(errMsg)
-        return(machines)
+        return machines
             
     # Returns a validated (by self.nameValidator) name for the config
     # (and creates the parameters for self.nameValidator)
@@ -42,9 +42,8 @@ class Config:
         secondPrompt = 'Enter a new name for the config please.\n'
         target = input('Name the new config please!\n' + prompt)
         name = self.nameValidator(info, initPrompt, secondPrompt, target)
-        return(name)
+        return name
 
-    # Will manipulate configs (add, modify or remove elements)
     def edit(self):
         pass
 
@@ -63,21 +62,19 @@ class Config:
             else:
                 errMsg = 'not a valid command: {0}'.format(cmd)
                 launchUI(errMsg)
-        return(result)
+        return result
 
-    # Self-explaining (no?) - calls for naming, building and saving of new config
     def new(self):
         self.name = self.create()
         self.machines = self.build()
         self.save()
 
-    # Splits all iterations of the passed parameter and yields the result
+    # iterates through param, returns comma-split-iterations
     def parse(self, rawInfo):
         for line in rawInfo:
             machine = line.split(',', 2)
-            yield(machine)
+            return machine
 
-    # Saves the current configuration
     def save(self):
         self.file = os.path.join(tcs.CONFIG_DIR, self.name + '.json')
         with open(self.file, 'w') as f:
@@ -107,7 +104,7 @@ class Menu:
         text = ''
         for i, option in enumerate(self.menuDict):
                 text += '{0}: {1}\n'.format(i+1, self.menuDict[option][0])
-        return(text)
+        return text
 
     # Launches the menu (prints the string)
     # Loops the menu until a valid input has been made
@@ -123,7 +120,7 @@ class Menu:
                 else:
                     errMsg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menuDict))
                     launchUI(msg)
-        return(self.name)
+        return self.name
 
 
 # Sets the global prompt by calling the prompt-function,
@@ -146,7 +143,7 @@ def buildPrompt():
         currentUser = promptInfo[0][:-1]
         currentMachine = promptInfo[1][:-1]
     os.unlink(promptInfoFile)
-    return('\n{0}@{1}:'.format(currentUser, currentMachine))
+    return '\n{0}@{1}:'.format(currentUser, currentMachine)
 
 
 # Says Goodbye and quits program
@@ -176,7 +173,7 @@ def getConfig():
 
 # Will return the tmux-operation(s) to perform on targets
 def getOperation():
-    return('operation')
+    return 'operation'
 
 
 # Initializes the startMenu-options (returns list of lists)
@@ -186,12 +183,12 @@ def getStart():
         ['Manage config', getConfig],
         ['Stop the app', exitApp]
     ]
-    return(startMenu)
+    return startMenu
 
 
 # Will return the targets to perform tmux-operations on
 def getTargets():
-    return([x+1 for x in range(3)])
+    return [x+1 for x in range(3)]
 
 
 # Will launch the actual tmux-session - called with:
@@ -207,7 +204,7 @@ def launchUI(content):
     if type(content) == str:
         content = [[content, getConfig]]
     cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
-    return(cmd)
+    return cmd
 
 
 # Instantiates the mainMenu-object (of the Menu-class) with the initial menu-options
