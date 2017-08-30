@@ -17,4 +17,4 @@ MAGENTA = curses.COLOR_MAGENTA
 CYAN = curses.COLOR_CYAN
 WHITE = curses.COLOR_WHITE
 
-CONFIG_DIR = "configs"
+CONFIG_DIR = 'configs'

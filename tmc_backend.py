@@ -115,7 +115,7 @@ class Menu:
     def launch(self):
         cmd = None
         while not cmd in range(len(self.menuDict)):
-            msg = '\n' + self.text[:-1]
+            msg = '\nTEST\n' + self.text[:-1]
             cmd = launchUI(msg)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):

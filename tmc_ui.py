@@ -12,47 +12,22 @@ def getBoxProperties(contentDict):
     boxHeight = 0
     boxWidth = 0
     line = 3
-
-    category = 'header'
-    propertyDict[category] = []
-    propertyDict[category].append([line, ''])
-    line, boxHeight = map(incrementVars,[line, boxHeight])
-    for row in contentDict[category]:
-        var = row
-        propertyDict[category].append([line, var])
-        line, boxHeight = map(incrementVars,[line, boxHeight])
-        if len(var) > boxWidth:
-            boxWidth = len(var)
-    propertyDict[category].append([line, ''])
-    line, boxHeight = map(incrementVars,[line, boxHeight])
-
-    category = 'content'
-    propertyDict[category] = []
-    for row in contentDict[category]:
-        if not type(row[1]) == list:
-            var = row
-            propertyDict[category].append([line, var])
-            line, boxHeight = map(incrementVars,[line, boxHeight])
-        else:
-            for var in row:
+    categories = ['header', 'content', 'footer']
+    for category in categories:
+        propertyDict[category] = []
+        for row in contentDict[category]:
+            if not type(row[1]) == list:
+                var = row
                 propertyDict[category].append([line, var])
                 line, boxHeight = map(incrementVars,[line, boxHeight])
-        if len(var) > boxWidth:
-            boxWidth = len(var)
-    propertyDict[category].append([line, ''])
-    line, boxHeight = map(incrementVars,[line, boxHeight])
-
-    category = 'footer'
-    propertyDict[category] = []
-    for row in contentDict[category]:
-        var = row
-        propertyDict[category].append([line, var])
-        line, boxHeight = map(incrementVars,[line, boxHeight])
-        if len(var) > boxWidth:
-            boxWidth = len(var)
-    propertyDict[category].append([line, ''])
-    line, boxHeight = map(incrementVars,[line, boxHeight])
-        
+            else:
+                for var in row:
+                    propertyDict[category].append([line, var])
+                    line, boxHeight = map(incrementVars,[line, boxHeight])
+            if len(var) + 2 > boxWidth:
+                boxWidth = len(var) + 2
+        propertyDict[category].append([line, ''])
+        line, boxHeight = map(incrementVars,[line, boxHeight])      
     boxWidth += 4
     return propertyDict, boxHeight, boxWidth
 
@@ -86,13 +61,11 @@ def killBox(stdscr):
 def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     # Takes keys from received menu as list for dict (see below)
     content = [x[0] for x in menu]
-
     contentDict = {
         'header' : [tcs.RELEASE],
         'content' : content,
         'footer' : [tcs.FOOTER]
     }
-
     stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
     makeBox(contentDict)
     # Waits for keypress (so the program doesnt just terminate while being WIP)
@@ -108,15 +81,17 @@ def makeBox(contentDict):
     propertyDict, boxHeight, boxWidth = getBoxProperties(contentDict)
     win = curses.newwin(boxHeight + 2, boxWidth, 5, 35)
     win.bkgd(curses.color_pair(2))
-    for line in propertyDict['header']:
-        win.addstr(line[0] -2, 2, line[1])
-    for line in propertyDict['content']:
-        for entity in line:
-            if not type(entity) == list:
+    win.refresh()
+    for section in propertyDict:
+        if not section == 'content':
+            for line in propertyDict[section]:
                 win.addstr(line[0] -2, 2, line[1])
-            else:
-                win.addstr(entity[0] -2, 2, entity[1])
-    for line in propertyDict['footer']:
-        win.addstr(line[0] -2, 2, line[1]) 
+        else:
+            for line in propertyDict[section]:
+                for entity in line:
+                    if not type(entity) == list:
+                        win.addstr(line[0] -2, 2, line[1])
+                    else:
+                        win.addstr(entity[0] -2, 2, entity[1])
     win.box()
     win.refresh()
