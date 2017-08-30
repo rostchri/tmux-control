@@ -12,11 +12,14 @@ class Config:
     def __init__(self, name):
         self.machines = {}
         self.name = name
-
     # Builds a new config via user-input, returns dict in desired format
     def build(self):
         machines, reading = {}, True
-        cfgPrompt = '\nenter your config-content!\nsyntax: machine,info;machine,info [...]\nenter q to leave config-reading-mode.'
+        cfgPrompt = """
+                    enter your config-content!
+                    syntax: machine,info;machine,info [...]
+                    enter q to leave config-reading-mode."""
+        launchUI(cfgPrompt)
         while reading:
             cmd = input(prompt)
             if cmd == 'q':
@@ -112,7 +115,7 @@ class Menu:
     def launch(self):
         cmd = None
         while not cmd in range(len(self.menuDict)):
-            msg = '\nTEST\n' + self.text[:-1]
+            msg = '\n' + self.text[:-1]
             cmd = launchUI(msg)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menuDict)):
@@ -202,7 +205,7 @@ def launchSession(operation, targets):
 
 def launchUI(content):
     if type(content) == str:
-        content = [[content, getConfig]]
+        content = [[content]]
     cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
     return cmd
 
@@ -213,17 +216,16 @@ def launchUI(content):
 # (depending on the to-be-called-function, parameters may have to be called) (forever)
 def main():
     startMenu = getStart()
-    cmd = launchUI(startMenu)
     mainMenu = Menu('Main Menu', startMenu)
     run = True
     while run:
-        result = mainMenu.launch()
-        if 'launchSession' in str(result):
+        cmd = mainMenu.launch()
+        if 'launchSession' in str(cmd):
             operation = getOperation()
             targets = getTargets()
             launchSession(operation, targets)
         else:
-            result()
+            cmd()
         
 
 # The task thats gonna be executed (which this entire thing is about),
