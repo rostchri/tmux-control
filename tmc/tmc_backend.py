@@ -139,9 +139,9 @@ def app():
 
 # Casts 'whoami' and 'hostname' to os, builds and returns a prompt
 def buildPrompt():
-    promptInfoFile = 'files/promptInfo.txt'
-    if not os.path.isdir('files'):
-        os.mkdir('files')
+    promptInfoFile = tcs.FILE_DIR + '/promptInfo.txt'
+    if not os.path.isdir(tcs.FILE_DIR):
+        os.mkdir(tcs.FILE_DIR)
     os.system('whoami > {0} && hostname >> {0}'.format(promptInfoFile))
     with open(promptInfoFile, 'r') as f:
         promptInfo = f.readlines()

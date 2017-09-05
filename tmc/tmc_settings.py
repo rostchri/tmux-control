@@ -12,9 +12,10 @@ RED = curses.COLOR_RED
 GREEN = curses.COLOR_GREEN
 BLUE = curses.COLOR_BLUE
 YELLOW = curses.COLOR_YELLOW
-BLACK = curses.COLOR_BLACK        
+BLACK = curses.COLOR_BLACK
 MAGENTA = curses.COLOR_MAGENTA
 CYAN = curses.COLOR_CYAN
 WHITE = curses.COLOR_WHITE
 
-CONFIG_DIR = 'configs'
+CONFIG_DIR = 'tmc/configs'
+FILE_DIR = 'tmc/files'
