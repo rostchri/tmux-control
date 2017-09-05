@@ -95,7 +95,7 @@ class Menu:
         self.menu_dict = {}
         self.name = name
         self.options = options
-        self.text = name + '\n' + self.build_menu()
+        self.text = [[self.name]] + self.build_menu()
 
     # Builds a dict from raw options with enum-results as keys,
     # comprehends that dicts content as adequate, printable menu-options,
@@ -104,9 +104,10 @@ class Menu:
         for i, option in enumerate(self.options):
             self.menu_dict[i] = option
             self.menu_dict[i][0] = '{0}'.format(self.menu_dict[i][0])
-        text = ''
+        text = []
         for i, option in enumerate(self.menu_dict):
-                text += '{0}: {1}\n'.format(i+1, self.menu_dict[option][0])
+            text.append(['{0}: {1}'.format(i+1, self.menu_dict[option][0])])
+        text.append('')
         return text
 
     # Launches the menu (prints the string)
@@ -115,7 +116,7 @@ class Menu:
     def launch(self):
         cmd = None
         while not cmd in range(len(self.menu_dict)):
-            msg = '\n' + self.text[:-1]
+            msg = self.text[:-1]
             cmd = launch_ui(msg)
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menu_dict)):
