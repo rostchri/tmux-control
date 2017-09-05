@@ -3,17 +3,17 @@ import curses
 import tmc_settings as tcs
 
 
-def buildBox(contentDict):
-    propertyDict, boxHeight, boxWidth = getBoxProperties(contentDict)
-    win = curses.newwin(boxHeight + 2, boxWidth, 5, 35)
+def build_box(content_dict):
+    property_dict, box_height, box_width = get_box_properties(content_dict)
+    win = curses.newwin(box_height + 2, box_width, 5, 35)
     win.bkgd(curses.color_pair(2))
     win.refresh()
-    for section in propertyDict:
+    for section in property_dict:
         if not section == 'content':
-            for line in propertyDict[section]:
+            for line in property_dict[section]:
                 win.addstr(line[0] -2, 2, line[1])
         else:
-            for line in propertyDict[section]:
+            for line in property_dict[section]:
                 for entity in line:
                     if not type(entity) == list:
                         win.addstr(line[0] -2, 2, line[1])
@@ -23,36 +23,36 @@ def buildBox(contentDict):
     win.refresh()
 
 
-def getBoxProperties(contentDict):
-    propertyDict = {}
-    boxHeight = 0
-    boxWidth = 0
+def get_box_properties(content_dict):
+    property_dict = {}
+    box_height = 0
+    box_width = 0
     line = 3
     categories = ['header', 'content', 'footer']
     for category in categories:
-        propertyDict[category] = []
-        for row in contentDict[category]:
+        property_dict[category] = []
+        for row in content_dict[category]:
             if not type(row[1]) == list:
                 var = row
-                propertyDict[category].append([line, var])
-                line, boxHeight = map(incrementVars,[line, boxHeight])
+                property_dict[category].append([line, row])
+                line, box_height = map(increment_vars,[line, box_height])
             else:
                 for var in row:
-                    propertyDict[category].append([line, var])
-                    line, boxHeight = map(incrementVars,[line, boxHeight])
-            if len(var) + 2 > boxWidth:
-                boxWidth = len(var) + 2
-        propertyDict[category].append([line, ''])
-        line, boxHeight = map(incrementVars,[line, boxHeight])      
-    boxWidth += 4
-    return propertyDict, boxHeight, boxWidth
+                    property_dict[category].append([line, var])
+                    line, box_height = map(increment_vars,[line, box_height])
+            if len(var) + 2 > box_width:
+                box_width = len(var) + 2
+        property_dict[category].append([line, ''])
+        line, box_height = map(increment_vars,[line, box_height])      
+    box_width += 4
+    return property_dict, box_height, box_width
 
 
-def incrementVars(x):
+def increment_vars(x):
     return x+1
 
 
-def initCurses(inactiveColor, windowBg, boxText, boxBg):
+def init_curses(inactiveColor, windowBg, boxText, boxBg):
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
@@ -65,7 +65,7 @@ def initCurses(inactiveColor, windowBg, boxText, boxBg):
     return stdscr
 
 
-def killBox(stdscr):
+def kill_box(stdscr):
     curses.nocbreak()
     stdscr.keypad(False)
     curses.echo()
@@ -74,14 +74,14 @@ def killBox(stdscr):
 
 def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     content = [x[0] for x in menu]
-    contentDict = {
+    content_dict = {
         'header' : [tcs.APP_INFO],
         'content' : content,
         'footer' : [tcs.FOOTER]
     }
-    stdscr = initCurses(inactiveColor, windowBg, boxText, boxBg)
-    buildBox(contentDict)
+    stdscr = init_curses(inactiveColor, windowBg, boxText, boxBg)
+    build_box(content_dict)
     # Waits for keypress (so the program doesnt just terminate while being WIP)
     cmd = chr(stdscr.getch())
-    killBox(stdscr)
+    kill_box(stdscr)
     return cmd
