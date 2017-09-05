@@ -32,7 +32,6 @@ def getBoxProperties(contentDict):
     for category in categories:
         propertyDict[category] = []
         for row in contentDict[category]:
-            #checks wether 
             if not type(row[1]) == list:
                 var = row
                 propertyDict[category].append([line, var])
@@ -68,7 +67,7 @@ def initCurses(inactiveColor, windowBg, boxText, boxBg):
 
 def killBox(stdscr):
     curses.nocbreak()
-    stdscr.keypad(0)
+    stdscr.keypad(False)
     curses.echo()
     curses.endwin()
 
