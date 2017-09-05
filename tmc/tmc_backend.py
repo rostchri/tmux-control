@@ -28,18 +28,19 @@ class Config:
             if cmd == 'q':
                 reading = False
             else:
-                segments = cmd.split(';')
-                for x in segments:
-                    print('parsing ' + x)
-                    machine, info = self.parse(x)
-                    machines[machine] = info
-                #except:
-                #    err_msg = [
-                #        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
-                #        ['Input was:'],
-                #        ['{0}'.format(cmd)]
-                #    ]
-                #    launch_ui(err_msg, 'str')
+                try:
+                    segments = cmd.split(';')
+                    for x in segments:
+                        print('parsing ' + x)
+                        machine, info = self.parse(x)
+                        machines[machine] = info
+                except:
+                    err_msg = [
+                        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
+                        ['Input was:'],
+                        ['{0}'.format(cmd)]
+                    ]
+                    launch_ui(err_msg, 'str')
         return machines
             
     # Returns a validated (by self.name_validator) name for the config
