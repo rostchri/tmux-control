@@ -18,25 +18,28 @@ class Config:
         cfg_prompt = [
             ['enter your config-content!'],
             ['syntax: machine,info;machine,info [...]'],
-            ['enter q to leave config-reading-mode.']
+            ['enter q to leave config-reading-mode.'],
+            [''],
+            ['Press any key to enter reading mode']
         ]
-        launch_ui(cfg_prompt, 'str')
+        launch_ui(cfg_prompt, 'chr')
         while reading:
             cmd = launch_ui('>', 'str')
             if cmd == 'q':
                 reading = False
             else:
-                try:
-                    segments = self.parse(cmd.split(';'))
-                    for id, info in segments:
-                        machines[id] = info
-                except:
-                    err_msg = [
-                        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
-                        ['Input was:'],
-                        ['{0}'.format(cmd)]
-                    ]
-                    launch_ui(err_msg, 'str')
+                segments = cmd.split(';')
+                for x in segments:
+                    print('parsing ' + x)
+                    machine, info = self.parse(x)
+                    machines[machine] = info
+                #except:
+                #    err_msg = [
+                #        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
+                #        ['Input was:'],
+                #        ['{0}'.format(cmd)]
+                #    ]
+                #    launch_ui(err_msg, 'str')
         return machines
             
     # Returns a validated (by self.name_validator) name for the config
@@ -76,10 +79,9 @@ class Config:
         self.save()
 
     # iterates through param, returns comma-split-iterations
-    def parse(self, raw_info):
-        for line in raw_info:
-            machine = line.split(',', 2)
-            return machine
+    def parse(self, data):
+        machine, info = data.split(',')
+        return machine, info
 
     def save(self):
         self.file = os.path.join(tcs.CONFIG_DIR, self.name + '.json')
