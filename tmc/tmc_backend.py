@@ -22,9 +22,8 @@ class Config:
             [''],
             ['Press any key to enter reading mode']
         ]
-        launch_ui(cfg_prompt, 'chr')
         while reading:
-            cmd = launch_ui('>', 'str')
+            cmd = launch_ui(cfg_prompt, 'str')
             if cmd == 'q':
                 reading = False
             else:
