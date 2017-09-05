@@ -15,13 +15,14 @@ class Config:
     # Builds a new config via user-input, returns dict in desired format
     def build(self):
         machines, reading = {}, True
-        cfg_prompt = """
-                    enter your config-content!
-                    syntax: machine,info;machine,info [...]
-                    enter q to leave config-reading-mode."""
-        launch_ui(cfg_prompt)
+        cfg_prompt = [
+            ['enter your config-content!'],
+            ['syntax: machine,info;machine,info [...]'],
+            ['enter q to leave config-reading-mode.']
+        ]
+        launch_ui(cfg_prompt, 'str')
         while reading:
-            cmd = input(prompt)
+            cmd = launch_ui('>', 'str')
             if cmd == 'q':
                 reading = False
             else:
@@ -30,21 +31,24 @@ class Config:
                     for id, info in segments:
                         machines[id] = info
                 except:
-                    err_msg = """Input must be splittable into by-comma-splittable segments with semicolons!
-                    Input was:
-                    {0}'.format(cmd))"""
-                    launch_ui(err_msg)
+                    err_msg = [
+                        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
+                        ['Input was:'],
+                        ['{0}'.format(cmd)]
+                    ]
+                    launch_ui(err_msg, 'str')
         return machines
             
     # Returns a validated (by self.name_validator) name for the config
     # (and creates the parameters for self.name_validator)
     def create(self):
         cmd, reading, self.raw_info = str, 1, []
-        info = '\ncreating config'
-        init_prompt = 'Is that name correct? (y/n)\n{0}'.format(prompt)
-        second_prompt = 'Enter a new name for the config please.\n'
-        target = input('Name the new config please!\n' + prompt)
-        name = self.name_validator(info, init_prompt, second_prompt, target)
+        info = 'creating config'
+        init_prompt = 'Is that name correct? (y/n)'
+        second_prompt = 'Enter a new name for the config please.'
+        target = launch_ui('Name the new config please!', 'str')
+        validation_prompt = [[target], [init_prompt], ['']]
+        name = self.name_validator(info, init_prompt, second_prompt, target, validation_prompt)
         return name
 
     def edit(self):
@@ -52,19 +56,18 @@ class Config:
 
     # Loops through a validating-and-replacing-process until the user-input is 'y',
     # returns the validated variable
-    def name_validator(self, info, init_prompt, second_prompt, target):
+    def name_validator(self, info, init_prompt, second_prompt, target, validation_prompt):
         validated = False
         while not validated:
-            print(info + ': ' + target)
-            cmd = input(init_prompt)
+            cmd = launch_ui(validation_prompt, 'chr')
             if cmd == 'y':
                 result = target
                 validated = True
             elif cmd == 'n':
-                target = input(second_prompt)
+                target = launch_ui(second_prompt, 'chr')
             else:
                 err_msg = 'not a valid command: {0}'.format(cmd)
-                launch_ui(err_msg)
+                launch_ui(err_msg, 'chr')
         return result
 
     def new(self):
@@ -117,13 +120,13 @@ class Menu:
         cmd = None
         while not cmd in range(len(self.menu_dict)):
             msg = self.text[:-1]
-            cmd = launch_ui(msg)
+            cmd = launch_ui(msg, 'chr')
             if cmd.isdigit():
                 if int(cmd) - 1 in range(len(self.menu_dict)):
                     return(self.menu_dict[int(cmd)-1][1])
                 else:
                     err_msg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
-                    launch_ui(msg)
+                    launch_ui(msg, 'chr')
         return self.name
 
 
@@ -134,7 +137,7 @@ def app():
     prompt = build_prompt()
     server = libtmux.Server()
     welcome_msg = 'Welcome to tmuxControl!'
-    launch_ui(welcome_msg)
+    launch_ui(welcome_msg, 'chr')
     main()
 
 
@@ -155,7 +158,7 @@ def build_prompt():
 # Says Goodbye and quits program
 def exit_app():
     bye_msg = 'Goodbye'
-    launch_ui(bye_msg)
+    launch_ui(bye_msg, 'chr')
     sys.exit(0)
 
 
@@ -205,13 +208,13 @@ def get_targets():
 def launch_session(operation, targets):
     #operate(targets)
     launch_msg = 'launch successful!'
-    launch_ui(launch_msg)
+    launch_ui(launch_msg, 'chr')
 
 
-def launch_ui(content):
+def launch_ui(content, desired_return):
     if type(content) == str:
         content = [[content]]
-    cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN)
+    cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN, desired_return)
     return cmd
 
 

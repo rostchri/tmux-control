@@ -32,7 +32,7 @@ def get_box_properties(content_dict):
     for category in categories:
         property_dict[category] = []
         for row in content_dict[category]:
-            if not type(row[1]) == list:
+            if not type(row) == list:
                 var = row
                 property_dict[category].append([line, row])
                 line, box_height = map(increment_vars,[line, box_height])
@@ -52,14 +52,14 @@ def increment_vars(x):
     return x+1
 
 
-def init_curses(inactiveColor, windowBg, boxText, boxBg):
+def init_curses(inactive_color, window_bg, box_text, box_bg):
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
     stdscr.keypad(1)
     curses.start_color()
-    curses.init_pair(1, inactiveColor, windowBg)
-    curses.init_pair(2, boxText, boxBg)
+    curses.init_pair(1, inactive_color, window_bg)
+    curses.init_pair(2, box_text, box_bg)
     stdscr.bkgd(curses.color_pair(1))
     stdscr.refresh()
     return stdscr
@@ -72,16 +72,23 @@ def kill_box(stdscr):
     curses.endwin()
 
 
-def launch(menu, inactiveColor, windowBg, boxText, boxBg):
+def launch(menu, inactive_color, window_bg, box_text, box_bg, desired_return):
     content = [x[0] for x in menu]
     content_dict = {
         'header' : [tcs.APP_INFO],
         'content' : content,
         'footer' : [tcs.FOOTER]
     }
-    stdscr = init_curses(inactiveColor, windowBg, boxText, boxBg)
+    stdscr = init_curses(inactive_color, window_bg, box_text, box_bg)
     build_box(content_dict)
-    # Waits for keypress (so the program doesnt just terminate while being WIP)
-    cmd = chr(stdscr.getch())
+    cmd = get_command(desired_return, stdscr)
     kill_box(stdscr)
+    return cmd
+
+
+def get_command(desired_return, stdscr):
+    if desired_return == 'chr':
+        cmd = chr(stdscr.getch())
+    else:
+        cmd = stdscr.getstr()
     return cmd
