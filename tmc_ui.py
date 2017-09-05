@@ -76,7 +76,7 @@ def killBox(stdscr):
 def launch(menu, inactiveColor, windowBg, boxText, boxBg):
     content = [x[0] for x in menu]
     contentDict = {
-        'header' : [tcs.RELEASE],
+        'header' : [tcs.APP_INFO],
         'content' : content,
         'footer' : [tcs.FOOTER]
     }

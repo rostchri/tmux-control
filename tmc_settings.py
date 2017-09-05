@@ -3,7 +3,7 @@ import curses
 APP_NAME = 'tmuxControl'
 APP_VERSION = 'v0.1'
 
-RELEASE = '{0} {1}'.format(APP_NAME, APP_VERSION)
+APP_INFO = '{0} {1}'.format(APP_NAME, APP_VERSION)
 GIT_LINK = 'https://github.com/2357mam/tmuxControl'
 FOOTER = 'source: {0}'.format(GIT_LINK)
 
