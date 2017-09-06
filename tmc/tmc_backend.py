@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 
 import libtmux
 
@@ -186,7 +187,7 @@ def get_config():
 
 # Will return the tmux-operation(s) to perform on targets
 def get_operation():
-    return 'operation'
+    return 'ssh'
 
 
 # Initializes the start_menu-options (returns list of lists)
@@ -201,14 +202,21 @@ def get_start():
 
 # Will return the targets to perform tmux-operations on
 def get_targets():
-    return [x+1 for x in range(3)]
+    targets = {
+        'machine_1': {
+            'user': 'max',
+            'machine': 'localhost',
+            'pw': 'test123'
+        }
+    }
+    return targets
 
 
 # Will launch the actual tmux-session - called with:
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
 def launch_session(operation, targets):
-    #operate(targets)
+    operate(operation, targets)
     launch_msg = 'launch successful!'
     launch_ui(launch_msg, 'chr')
 
@@ -240,8 +248,33 @@ def main():
 
 # The task thats gonna be executed (which this entire thing is about),
 # going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
-def operate(targets):
-    for target in targets:
-        msg_target = target
-    launch_msg = 'launch successful!'
-    launch_ui(launch_msg)
+def operate(operation, targets):
+    target_list = []
+
+    os.system('tmux new-session -n tmc_init -s tmc')
+
+    server = libtmux.Server()
+    session = server.find_where({ "session_name": "tmc" })
+
+    if operation == 'ssh':
+        for x in targets:
+            target_user = targets[x]['user']
+            target_machine = targets[x]['machine']
+            target_pw = targets[x]['pw']
+
+            init_target = 'ssh {0}@{1}'.format(target_user, target_machine)
+            confirm_init = target_pw
+
+            target_command = [init_target, confirm_init]
+            target_list.append(target_command)
+
+        if len(target_list) == 1:
+            for x in target_list:
+                w = session.new_window(window_name=x)
+                window = session.attached_window()
+                pane = window.split_window(attach=False)
+                pane.select_pane()
+                pane.send_keys(x[0])
+
+            launch_msg = 'launch successful!'
+            launch_ui(launch_msg, 'chr')
