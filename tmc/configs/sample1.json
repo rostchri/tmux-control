@@ -1,1 +1,1 @@
-{"machine1": "127.0.0.1", "machine2": "127.0.0.1", "machine3": "127.0.0.1", "machine4": "127.0.0.1"}
+{ "machine1": { "user": "max", "machine": "localhost", "pw": "test123" } }

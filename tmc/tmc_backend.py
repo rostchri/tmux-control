@@ -201,14 +201,9 @@ def get_start():
 
 
 # Will return the targets to perform tmux-operations on
-def get_targets():
-    targets = {
-        'machine_1': {
-            'user': 'max',
-            'machine': 'localhost',
-            'pw': 'test123'
-        }
-    }
+def get_targets(target_file):
+    with open('tmc/configs/{0}.json'.format(target_file), 'r') as f:
+        targets = json.load(f)
     return targets
 
 
@@ -240,7 +235,7 @@ def main():
         cmd = main_menu.launch()
         if 'launch_session' in str(cmd):
             operation = get_operation()
-            targets = get_targets()
+            targets = get_targets('sample1')
             launch_session(operation, targets)
         else:
             cmd()
@@ -270,9 +265,9 @@ def operate(operation, targets):
 
         if len(target_list) == 1:
             for x in target_list:
-                w = session.new_window(window_name=x)
+                w = session.new_window(attach=True, window_name=x)
                 window = session.attached_window()
-                pane = window.split_window(attach=False)
+                pane = window.split_window(attach=True)
                 pane.select_pane()
                 pane.send_keys(x[0])
 
