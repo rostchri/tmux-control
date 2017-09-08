@@ -3,3 +3,4 @@ promptInfo.txt
 tmuxControl.log
 *.pyc
 *.swp
+*.vim
