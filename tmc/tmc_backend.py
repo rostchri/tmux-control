@@ -214,6 +214,7 @@ def get_targets(target_file):
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
 def launch_session(operation, targets):
+    init_tmux()
     operate(operation, targets)
     launch_msg = 'launch successful!'
     launch_ui(launch_msg, 'chr')
@@ -247,23 +248,14 @@ def main():
 # The task thats gonna be executed (which this entire thing is about),
 # going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
 def operate(operation, targets):
-    target_list = []
-
-    os.system('tmux new-session -n tmc_init -s tmc')
-
-    server = libtmux.Server()
-    session = server.find_where({ "session_name": "tmc" })
-
     if operation == 'ssh':
-        for x in targets:
+        target_list = []
+	for x in targets:
             target_user = targets[x]['user']
             target_machine = targets[x]['machine']
             target_pw = targets[x]['pw']
-
             init_target = 'ssh {0}@{1}'.format(target_user, target_machine)
-            confirm_init = target_pw
-
-            target_command = [init_target, confirm_init]
+            target_command = [init_target, target_pw]
             target_list.append(target_command)
 
         if len(target_list) == 1:
@@ -276,3 +268,13 @@ def operate(operation, targets):
 
             launch_msg = 'launch successful!'
             launch_ui(launch_msg, 'chr')
+
+
+def init_tmux():
+    server = libtmux.Server()
+    os.system('unset tmux')
+    os.system('tmux new -s tmc_adm')
+    os.system('tmux new -s tmc_ops')
+    adm_session = server.find_where({ "session_name": "tmc_adm" })
+    op_session = server.find_where({ "session_name": "tmc_ops" })
+
