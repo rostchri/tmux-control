@@ -4,3 +4,4 @@ tmuxControl.log
 *.pyc
 *.swp
 *.vim
+*.swo
