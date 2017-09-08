@@ -272,9 +272,8 @@ def operate(operation, targets):
 
 def init_tmux():
     server = libtmux.Server()
-    os.system('unset tmux')
-    os.system('tmux new -s tmc_adm')
-    os.system('tmux new -s tmc_ops')
+    os.system('tmux new -s tmc_adm -d')
+    os.system('TMUX= tmux new-session -s tmc_ops')
     adm_session = server.find_where({ "session_name": "tmc_adm" })
     op_session = server.find_where({ "session_name": "tmc_ops" })
 
