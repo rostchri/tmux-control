@@ -10,9 +10,11 @@ import tmc_settings as tcs
 
 
 class Config:
+    
     def __init__(self, name):
         self.machines = {}
         self.name = name
+    
     # Builds a new config via user-input, returns dict in desired format
     def build(self):
         machines, reading = {}, True
@@ -96,6 +98,7 @@ class Config:
 
 # Gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
 class Menu:
+    
     # creates the to-be-printed-string by prefixing the return-value of 'self.build_menu' with the instances name (+ '\n') 
     def __init__(self, name, options):
         self.menu_dict = {}
