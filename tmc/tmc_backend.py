@@ -272,8 +272,13 @@ def operate(operation, targets):
 
 def init_tmux():
     server = libtmux.Server()
-    os.system('tmux new -s tmc_adm -d')
-    os.system('TMUX= tmux new-session -s tmc_ops')
+    os.system('tmux new -s tmc_ops -d')
+    os.system('tmux new -s tmc_adm')
     adm_session = server.find_where({ "session_name": "tmc_adm" })
-    op_session = server.find_where({ "session_name": "tmc_ops" })
+    ops_session = server.find_where({ "session_name": "tmc_ops" })
+    w = ops_session.new_window(attach=True, window_name="Hello World")
+    window = ops_session.attached_window()
+    pane = window.split_window(attach=True)
+    pane.select_pane()
+    pane.send_keys("echo 'Hello World'")
 
