@@ -99,7 +99,6 @@ class Config:
 # Gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
 class Menu:
     
-    # creates the to-be-printed-string by prefixing the return-value of 'self.build_menu' with the instances name (+ '\n') 
     def __init__(self, name, options):
         self.menu_dict = {}
         self.name = name
@@ -131,7 +130,7 @@ class Menu:
                 if int(cmd) - 1 in range(len(self.menu_dict)):
                     return(self.menu_dict[int(cmd)-1][1])
                 else:
-                    err_msg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
+                    err_msg = '{0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
                     launch_ui(msg, 'chr')
         return self.name
 
@@ -246,7 +245,8 @@ def main():
         
 
 # The task thats gonna be executed (which this entire thing is about),
-# going to be called with a parameter defining the targets (e.g. ssh-connection=operation, machines=targets (including login-information etc))
+# going to be called with a parameter defining the targets,
+# (e.g. ssh-connection=operation, machines=targets (including login-information etc))
 def operate(operation, targets):
     if operation == 'ssh':
         target_list = []
