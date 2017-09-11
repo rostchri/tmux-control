@@ -130,7 +130,7 @@ class Menu:
                 if int(cmd) - 1 in range(len(self.menu_dict)):
                     return(self.menu_dict[int(cmd)-1][1])
                 else:
-                    err_msg = '{0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
+                    err_msg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
                     launch_ui(msg, 'chr')
         return self.name
 
@@ -187,8 +187,8 @@ def get_config():
         current_config.new()
 
 
-# Will return the tmux-operation(s) to perform on targets
-def get_operation():
+# Will return the tmux-task(s) to perform on targets
+def get_task():
     return 'ssh'
 
 
@@ -202,7 +202,7 @@ def get_start():
     return start_menu
 
 
-# Will return the targets to perform tmux-operations on
+# Will return the targets to perform tmux-tasks on
 def get_targets(target_file):
     with open('tmc/configs/{0}.json'.format(target_file), 'r') as f:
         targets = json.load(f)
@@ -212,9 +212,9 @@ def get_targets(target_file):
 # Will launch the actual tmux-session - called with:
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
-def launch_session(operation, targets):
+def launch_session(task, targets):
     init_tmux()
-    operate(operation, targets)
+    execute(task, targets)
     launch_msg = 'launch successful!'
     launch_ui(launch_msg, 'chr')
 
@@ -237,18 +237,18 @@ def main():
     while run:
         cmd = main_menu.launch()
         if 'launch_session' in str(cmd):
-            operation = get_operation()
+            task = get_task()
             targets = get_targets('sample1')
-            launch_session(operation, targets)
+            launch_session(task, targets)
         else:
             cmd()
         
 
 # The task thats gonna be executed (which this entire thing is about),
 # going to be called with a parameter defining the targets,
-# (e.g. ssh-connection=operation, machines=targets (including login-information etc))
-def operate(operation, targets):
-    if operation == 'ssh':
+# (e.g. ssh-connection=task, machines=targets (including login-information etc))
+def execute(task, targets):
+    if task == 'ssh':
         target_list = []
 	for x in targets:
             target_user = targets[x]['user']
