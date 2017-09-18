@@ -5,6 +5,8 @@ import time
 
 import libtmux
 
+import tmc_modules
+import tmc_tasks
 import tmc_ui as tcui
 import tmc_settings as tcs
 
@@ -276,9 +278,14 @@ def init_tmux():
     os.system('tmux new -s tmc_adm')
     adm_session = server.find_where({ "session_name": "tmc_adm" })
     ops_session = server.find_where({ "session_name": "tmc_ops" })
-    w = ops_session.new_window(attach=True, window_name="Hello World")
-    window = ops_session.attached_window()
-    pane = window.split_window(attach=True)
-    pane.select_pane()
-    pane.send_keys("echo 'Hello World'")
+    machines = [
+            ['mm', 'localhost'],
+            ['mm2', 'localhost']
+            ]
+    cmds = tmc_tasks.tmc_ssh.ssh_command(machines)
+    for cmd in cmds:
+        init_pane(cmds[cmd])
 
+def init_pane(cmd):
+    #pane =
+    pane.send_keys(cmd)
