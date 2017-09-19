@@ -274,18 +274,34 @@ def execute(task, targets):
 
 def init_tmux():
     server = libtmux.Server()
-    os.system('tmux new -s tmc_ops -d')
     os.system('tmux new -s tmc_adm')
     adm_session = server.find_where({ "session_name": "tmc_adm" })
-    ops_session = server.find_where({ "session_name": "tmc_ops" })
     machines = [
-            ['mm', 'localhost'],
-            ['mm2', 'localhost']
+            {
+                'machine': 'localhost1',
+                'user': 'mm',
+                'extra': 'foo1'
+                },
+            {
+                'machine': 'localhost2',
+                'user': 'mm',
+                'extra': 'foo2'
+                },
+            {
+                'machine': 'localhost3',
+                'user': 'mm',
+                'extra': 'foo3'
+                }
             ]
-    cmds = tmc_tasks.tmc_ssh.ssh_command(machines)
-    for cmd in cmds:
-        init_pane(cmds[cmd])
+    # add ssh-commands to elements to dict (key 'ssh')
+    machines = tmc_tasks.tmc_ssh.create_ssh_commands(machines)
+    # add window-names and -ids to dict (window_id, window_name)
+    # also actually creates the windows
+    machines = tmc_modules.tmc_session_manager.create_windows(machines)
+    session = server.find_where({ "session_name": "tmc_ops" })
+    for el in machines:
+        window = session.find_where({ "window_name": el['window_name']})
+        pane = select_pane()
+        pane.send_keys(el['cmd'])
 
-def init_pane(cmd):
-    #pane =
-    pane.send_keys(cmd)
+
