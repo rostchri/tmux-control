@@ -141,6 +141,9 @@ class Menu:
 # prints the welcome-message, then calls the main-function
 def app():
     global prompt
+    server = libtmux.Server()
+    os.system('tmux new -d -s tmc_adm') 
+    adm_session = server.find_where({ "session_name": "tmc_adm" })
     prompt = build_prompt()
     welcome_msg = 'Welcome to tmuxControl!'
     launch_ui(welcome_msg, 'chr')
@@ -235,8 +238,6 @@ def execute():
 
 def init_tmux():
     server = libtmux.Server()
-    os.system('tmux new -d -s tmc_adm')
-    adm_session = server.find_where({ "session_name": "tmc_adm" })
     with open('tmc/configs/taskf_ssh.json', 'r') as f:
         machines = f.read()
         machines = json.loads(machines)

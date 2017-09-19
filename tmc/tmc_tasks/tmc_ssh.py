@@ -2,6 +2,7 @@
 def create_ssh_commands(ssh_machines):
     ssh_dict = {}
     for el in ssh_machines:
-        el['cmd'] = 'ssh {0}@{1}'.format(el['user'], el['machine'])
+        #el['cmd'] = 'ssh {0}@{1}'.format(el['user'], el['machine'])
+        el['cmd'] = 'neofetch'
     return(ssh_machines)
 
