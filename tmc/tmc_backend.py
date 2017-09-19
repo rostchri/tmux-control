@@ -237,23 +237,9 @@ def init_tmux():
     server = libtmux.Server()
     os.system('tmux new -d -s tmc_adm')
     adm_session = server.find_where({ "session_name": "tmc_adm" })
-    machines = [
-            {
-                'machine': 'localhost1',
-                'user': 'mm',
-                'extra': 'foo1'
-                },
-            {
-                'machine': 'localhost2',
-                'user': 'mm',
-                'extra': 'foo2'
-                },
-            {
-                'machine': 'localhost3',
-                'user': 'mm',
-                'extra': 'foo3'
-                }
-            ]
+    with open('tmc/configs/taskf_ssh.json', 'r') as f:
+        machines = f.read()
+        machines = json.loads(machines)
     # add ssh-commands to elements to dict (key 'ssh')
     machines = tmc_ssh.create_ssh_commands(machines)
     # add window-names and -ids to dict (window_id, window_name)
@@ -267,5 +253,4 @@ def init_tmux():
         pane = pane.select_pane()
         pane.send_keys(el['cmd'])
         pane_id += 1
-
 

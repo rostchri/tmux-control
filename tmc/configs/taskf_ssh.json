@@ -1,0 +1,22 @@
+[
+{
+"machine": "localhost1",
+"user": "mm",
+"extra": "foo1"
+},
+{
+"machine": "localhost2",
+"user": "mm",
+"extra": "foo2"
+},
+{
+"machine": "localhost3",
+"user": "mm",
+"extra": "foo3"
+},
+{
+"machine": "localhost4",
+"user": "mm",
+"extra": "foo4"
+}
+]
