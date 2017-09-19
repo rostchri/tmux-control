@@ -1,3 +1,5 @@
+import os
+
 import libtmux
 
 
@@ -8,16 +10,14 @@ window_id = 1
 def create_windows(targets):
     global window_id
     server = libtmux.Server()
-    server.new_session(session_name='tmc_ops')
+    os.system('tmux new -d -s tmc_ops')
     session = server.find_where({ "session_name": "tmc_ops" })
     for el in targets:
         target = el['machine']
-        session.new_window(attach=False)
-        session.windows[window_id].rename_window(target + '_w')
-        tempdict = {
-                'window_id': window_id,
-                'window_name': target + '_w'
-                }
-        el.update(tempdict)
+        window_name = target + '_w'
+        session.new_window()
+        session.windows[window_id].rename_window(window_name)
+        el['window_name'] = window_name
+        el['window_id'] = window_id
         window_id += 1
-    return(targets) 
+    return(targets)

@@ -142,7 +142,6 @@ class Menu:
 def app():
     global prompt
     prompt = build_prompt()
-    server = libtmux.Server()
     welcome_msg = 'Welcome to tmuxControl!'
     launch_ui(welcome_msg, 'chr')
     main()
@@ -189,36 +188,19 @@ def get_config():
         current_config.new()
 
 
-# Will return the tmux-task(s) to perform on targets
-def get_task():
-    return 'ssh'
-
-
 # Initializes the start_menu-options (returns list of lists)
 def get_start():
     start_menu = [
-        ['Launch tmux-session with config', launch_session],
+        ['Launch tmux-session with config', execute],
         ['Manage config', get_config],
         ['Stop the app', exit_app]
     ]
     return start_menu
 
 
-# Will return the targets to perform tmux-tasks on
-def get_targets(target_file):
-    with open('tmc/configs/{0}.json'.format(target_file), 'r') as f:
-        targets = json.load(f)
-    return targets
-
-
 # Will launch the actual tmux-session - called with:
 # a config (list of machines and respective info)
 # and a task (for now: ssh-logins (with the included info))
-def launch_session(task, targets):
-    init_tmux()
-    execute(task, targets)
-    launch_msg = 'launch successful!'
-    launch_ui(launch_msg, 'chr')
 
 
 def launch_ui(content, desired_return):
@@ -238,44 +220,23 @@ def main():
     run = True
     while run:
         cmd = main_menu.launch()
-        if 'launch_session' in str(cmd):
-            task = get_task()
-            targets = get_targets('sample1')
-            launch_session(task, targets)
-        else:
-            cmd()
+        cmd()
+        cmd = ''
         
 
 # The task thats gonna be executed (which this entire thing is about),
 # going to be called with a parameter defining the targets,
 # (e.g. ssh-connection=task, machines=targets (including login-information etc))
-def execute(task, targets):
-    if task == 'ssh':
-        target_list = []
-	for x in targets:
-            target_user = targets[x]['user']
-            target_machine = targets[x]['machine']
-            target_pw = targets[x]['pw']
-            init_target = 'ssh {0}@{1}'.format(target_user, target_machine)
-            target_command = [init_target, target_pw]
-            target_list.append(target_command)
-
-        if len(target_list) == 1:
-            for x in target_list:
-                w = session.new_window(attach=True, window_name=x)
-                window = session.attached_window()
-                pane = window.split_window(attach=False)
-                pane.select_pane()
-                pane.send_keys(x[0])
-
-            launch_msg = 'launch successful!'
-            launch_ui(launch_msg, 'chr')
+def execute():
+    init_tmux()        
+    launch_msg = 'launch successful!'
+    launch_ui(launch_msg, 'chr')
 
 
 def init_tmux():
     server = libtmux.Server()
-    #os.system('tmux new -s tmc_adm')
-    #adm_session = server.find_where({ "session_name": "tmc_adm" })
+    os.system('tmux new -d -s tmc_adm')
+    adm_session = server.find_where({ "session_name": "tmc_adm" })
     machines = [
             {
                 'machine': 'localhost1',
@@ -299,9 +260,12 @@ def init_tmux():
     # also actually creates the windows
     machines = tmc_session_manager.create_windows(machines)
     session = server.find_where({ "session_name": "tmc_ops" })
+    pane_id = 1
     for el in machines:
         window = session.find_where({ "window_name": el['window_name']})
-        pane = select_pane()
+        pane = window.select_pane('%{0}'.format(pane_id))
+        pane = pane.select_pane()
         pane.send_keys(el['cmd'])
+        pane_id += 1
 
 
