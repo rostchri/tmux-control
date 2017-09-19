@@ -253,4 +253,5 @@ def init_tmux():
         pane = pane.select_pane()
         pane.send_keys(el['cmd'])
         pane_id += 1
+    os.system('tmux attach-session -t tmc_ops') 
 
