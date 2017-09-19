@@ -5,8 +5,8 @@ import time
 
 import libtmux
 
-import tmc_modules
-import tmc_tasks
+from tmc_modules import tmc_session_manager
+from tmc_tasks import tmc_ssh
 import tmc_ui as tcui
 import tmc_settings as tcs
 
@@ -264,7 +264,7 @@ def execute(task, targets):
             for x in target_list:
                 w = session.new_window(attach=True, window_name=x)
                 window = session.attached_window()
-                pane = window.split_window(attach=True)
+                pane = window.split_window(attach=False)
                 pane.select_pane()
                 pane.send_keys(x[0])
 
@@ -274,8 +274,8 @@ def execute(task, targets):
 
 def init_tmux():
     server = libtmux.Server()
-    os.system('tmux new -s tmc_adm')
-    adm_session = server.find_where({ "session_name": "tmc_adm" })
+    #os.system('tmux new -s tmc_adm')
+    #adm_session = server.find_where({ "session_name": "tmc_adm" })
     machines = [
             {
                 'machine': 'localhost1',
@@ -294,10 +294,10 @@ def init_tmux():
                 }
             ]
     # add ssh-commands to elements to dict (key 'ssh')
-    machines = tmc_tasks.tmc_ssh.create_ssh_commands(machines)
+    machines = tmc_ssh.create_ssh_commands(machines)
     # add window-names and -ids to dict (window_id, window_name)
     # also actually creates the windows
-    machines = tmc_modules.tmc_session_manager.create_windows(machines)
+    machines = tmc_session_manager.create_windows(machines)
     session = server.find_where({ "session_name": "tmc_ops" })
     for el in machines:
         window = session.find_where({ "window_name": el['window_name']})
