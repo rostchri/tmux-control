@@ -10,8 +10,6 @@ from tmc_tasks import tmc_ssh
 import tmc_ui as tcui
 import tmc_settings as tcs
 
-LAUNCH_TOOL = os.getcwd() + '/tmc.py'
-
 class Config:
     
     def __init__(self, name):
@@ -236,18 +234,6 @@ def execute():
     launch_ui(launch_msg, 'chr')
 
 
-def init_adm():
-    server = libtmux.Server()
-    os.system('tmux new -d -s tmc_adm')
-    session = server.find_where({ "session_name": "tmc_adm" })
-    window = session.new_window()
-    session.windows[0].rename_window('tmux-control administration')
-    pane = window.select_pane('%0')
-    pane = pane.select_pane()
-    pane.send_keys(LAUNCH_TOOL)
-    os.system('tmux attach-session -t tmc_adm')
-
-
 def init_ops():
     server = libtmux.Server()
     # add ssh-commands to elements to dict (key 'ssh')
@@ -263,4 +249,5 @@ def init_ops():
         pane = pane.select_pane()
         pane.send_keys(el['cmd'])
         pane_id += 1
-    os.system('tmux attach-session -t tmc_ops') 
+    #os.system('tmux attach-session -t tmc_ops') 
+
