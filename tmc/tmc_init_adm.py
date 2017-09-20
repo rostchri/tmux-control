@@ -4,7 +4,7 @@ import libtmux
 
 LAUNCH_TOOL = os.getcwd() + '/tmc.py'
 
-def init_adm():
+def launch():
     server = libtmux.Server()
     os.system('tmux new -d -s tmc_adm')
     session = server.find_where({ "session_name": "tmc_adm" })
