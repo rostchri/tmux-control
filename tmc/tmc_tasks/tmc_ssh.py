@@ -4,7 +4,7 @@ import json
 def get_default_targets():
     with open('tmc/configs/taskf_ssh.json', 'r') as f:
         machines = f.read()
-        machines = json.loads(machines)
+s = json.loads(machines)
     return machines
 
 
@@ -12,6 +12,8 @@ def get_default_targets():
 def create_ssh_commands(ssh_machines=get_default_targets()):
     ssh_dict = {}
     for el in ssh_machines:
-        el['cmd'] = 'neofetch && ssh {0}@{1}'.format(el['user'], el['machine'])
+        user = el['user']
+        system = el['machine']
+        el['cmd'] = 'neofetch && ssh {0}@{1}'.format(user, system)
     return ssh_machines
 
