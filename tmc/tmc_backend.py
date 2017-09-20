@@ -39,7 +39,7 @@ class Config:
                         machines[machine] = info
                 except:
                     err_msg = [
-                        ['Input must be splittable into by-comma-splittable segments with semicolons!'],
+                        ['Input-format must be key,val;key,val'],
                         ['Input was:'],
                         ['{0}'.format(cmd)]
                     ]
@@ -97,7 +97,7 @@ class Config:
         self.machines = machines
 
 
-# Gets called with a name (to be displayed in the menu) and a list of options for the menu-instance
+# called with a name (to be displayed in the menu) and a list of options for the menu-instance
 class Menu:
     
     def __init__(self, name, options):
@@ -131,7 +131,7 @@ class Menu:
                 if int(cmd) - 1 in range(len(self.menu_dict)):
                     return(self.menu_dict[int(cmd)-1][1])
                 else:
-                    err_msg = 'your answer {0} was not in range! (min 1, max {1})'.format(cmd, len(self.menu_dict))
+                    err_msg = 'your answer was not in range!'
                     launch_ui(msg, 'chr')
         return self.name
 
@@ -169,7 +169,7 @@ def exit_app():
     sys.exit(0)
 
 
-# Reads the json-files in tcs.configDir, calls menu (for picking an existing or creating a new config)
+# Reads jsons in tcs.configDir, calls menu (for picking an existing or creating a new config)
 def get_config():
     cfgs = [['Create new config', '']]
     if not os.path.isdir(tcs.CONFIG_DIR):
