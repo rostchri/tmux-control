@@ -10,6 +10,7 @@ from tmc_tasks import tmc_ssh
 import tmc_ui as tcui
 import tmc_settings as tcs
 
+LAUNCH_TOOL = os.getcwd() + '/tmc.py'
 
 class Config:
     
@@ -141,9 +142,6 @@ class Menu:
 # prints the welcome-message, then calls the main-function
 def app():
     global prompt
-    server = libtmux.Server()
-    os.system('tmux new -d -s tmc_adm') 
-    adm_session = server.find_where({ "session_name": "tmc_adm" })
     prompt = build_prompt()
     welcome_msg = 'Welcome to tmuxControl!'
     launch_ui(welcome_msg, 'chr')
@@ -231,12 +229,24 @@ def main():
 # going to be called with a parameter defining the targets,
 # (e.g. ssh-connection=task, machines=targets (including login-information etc))
 def execute():
-    init_tmux()        
+    init_ops()        
     launch_msg = 'launch successful!'
     launch_ui(launch_msg, 'chr')
 
 
-def init_tmux():
+def init_adm():
+    server = libtmux.Server()
+    os.system('tmux new -d -s tmc_adm')
+    session = server.find_where({ "session_name": "tmc_adm" })
+    window = session.new_window()
+    session.windows[0].rename_window('tmux-control administration')
+    pane = window.select_pane('%0')
+    pane = pane.select_pane()
+    pane.send_keys(LAUNCH_TOOL)
+    os.system('tmux attach-session -t tmc_adm')
+
+
+def init_ops():
     server = libtmux.Server()
     with open('tmc/configs/taskf_ssh.json', 'r') as f:
         machines = f.read()
@@ -255,4 +265,3 @@ def init_tmux():
         pane.send_keys(el['cmd'])
         pane_id += 1
     os.system('tmux attach-session -t tmc_ops') 
-

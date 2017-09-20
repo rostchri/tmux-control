@@ -3,4 +3,4 @@
 from tmc import tmc_backend as tcb
 
 if __name__ == '__main__':
-    tcb.init_adm()
+    tcb.app()
