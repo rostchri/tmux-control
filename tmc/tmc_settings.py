@@ -4,7 +4,7 @@ APP_NAME = 'tmuxControl'
 APP_VERSION = 'v0.1'
 
 APP_INFO = '{0} {1}'.format(APP_NAME, APP_VERSION)
-GIT_LINK = 'https://github.com/2357mam/tmuxControl'
+GIT_LINK = 'https://github.com/2357mam/tmux-control'
 FOOTER = 'source: {0}'.format(GIT_LINK)
 
 # assigning colors

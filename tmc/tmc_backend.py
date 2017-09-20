@@ -166,6 +166,8 @@ def build_prompt():
 def exit_app():
     bye_msg = 'Goodbye'
     launch_ui(bye_msg, 'chr')
+    os.system('tmux kill-session -t tmc_ops')
+    os.system('tmux kill-session -t tmc_adm')
     sys.exit(0)
 
 
@@ -207,7 +209,7 @@ def get_start():
 def launch_ui(content, desired_return):
     if type(content) == str:
         content = [[content]]
-    cmd = tcui.launch(content, tcs.GREEN, tcs.GREEN, tcs.BLACK, tcs.GREEN, desired_return)
+    cmd = tcui.launch(content, tcs.BLACK, tcs.BLACK, tcs.WHITE, tcs.BLACK, desired_return)
     return cmd
 
 
@@ -248,11 +250,8 @@ def init_adm():
 
 def init_ops():
     server = libtmux.Server()
-    with open('tmc/configs/taskf_ssh.json', 'r') as f:
-        machines = f.read()
-        machines = json.loads(machines)
     # add ssh-commands to elements to dict (key 'ssh')
-    machines = tmc_ssh.create_ssh_commands(machines)
+    machines = tmc_ssh.create_ssh_commands()
     # add window-names and -ids to dict (window_id, window_name)
     # also actually creates the windows
     machines = tmc_session_manager.create_windows(machines)
