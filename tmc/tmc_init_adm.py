@@ -1,3 +1,5 @@
+# this module launches a tmux-session 'tmc_adm' and the tmc-app in  window 0 of that session.
+
 import os
 
 import libtmux

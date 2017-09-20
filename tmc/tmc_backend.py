@@ -234,20 +234,25 @@ def execute():
     launch_ui(launch_msg, 'chr')
 
 
-def init_ops():
+# gets the commands by the operations respective module (tmc_$OPERATION),
+# launches one window per machine and issues the dicts cmd-value to that window
+def init_ops(operation='ssh'):
     server = libtmux.Server()
-    # add ssh-commands to elements to dict (key 'ssh')
-    machines = tmc_ssh.create_ssh_commands()
-    # add window-names and -ids to dict (window_id, window_name)
-    # also actually creates the windows
-    machines = tmc_session_manager.create_windows(machines)
+    if operation == 'ssh':
+        # get dict with machine-info and ssh-commands (key = ssh)
+        target_dict = tmc_ssh.create_ssh_commands()
+    elif operation == 'foo':
+        # target_dict = tmc_foo.create_foo_commands()
+        pass
+    # add window-names and -ids to target-dict (window_id, window_name)
+    # also actually creates ops-session and the windows
+    target_dict = tmc_session_manager.create_windows(target_dict)
     session = server.find_where({ "session_name": "tmc_ops" })
     pane_id = 1
-    for el in machines:
+    for el in target_dict:
         window = session.find_where({ "window_name": el['window_name']})
         pane = window.select_pane('%{0}'.format(pane_id))
         pane = pane.select_pane()
         pane.send_keys(el['cmd'])
         pane_id += 1
-    #os.system('tmux attach-session -t tmc_ops') 
 
