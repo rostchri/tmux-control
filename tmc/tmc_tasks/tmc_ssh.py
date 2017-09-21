@@ -4,7 +4,7 @@ import json
 def get_default_targets():
     with open('tmc/configs/taskf_ssh.json', 'r') as f:
         machines = f.read()
-s = json.loads(machines)
+    machines = json.loads(machines)
     return machines
 
 

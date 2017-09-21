@@ -1,4 +1,4 @@
-impor curses
+import curses
 
 APP_NAME = 'tmuxControl'
 APP_VERSION = 'v0.1'
