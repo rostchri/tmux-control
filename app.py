@@ -8,8 +8,17 @@ from tmc import tmc_init_adm
 from tmc import tmc_tmux_conf_check as tcc
 
 
-# if an arg 1 exists, we check wether the desired launch is direct (no adm-session)
-# or not, 
+# checks wether the app was called with an arg,
+# arg can be:
+#  1. a config-file to launch an ssh-session with
+#  2. 'DIRECT_LAUNCH', launching the app without init_adm
+# if no arg exists, init_adm is called,
+# which then calls this script with 'DIRECT_LAUNCH' set as arg 1
+# this seems kind of clunky, but makes sense:
+# you just want to call one launching-app, and launch
+# init_adm OR an ssh-session with a custom file/,
+# after init_adm was called, you can launch the actual app -
+# with a gui and in the correct tmux-environment.
 if __name__ == '__main__':
     # ensures all requirements in tmux.conf are met
     tcc.check()
