@@ -5,3 +5,4 @@ tmuxControl.log
 *.swp
 *.vim
 *.swo
+custom_conf.json

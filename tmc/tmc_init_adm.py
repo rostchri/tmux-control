@@ -4,7 +4,7 @@ import os
 
 import libtmux
 
-LAUNCH_TOOL = os.getcwd() + '/app.py direct_launch'
+LAUNCH_TOOL = os.getcwd() + '/app.py DIRECT_LAUNCH'
 
 def launch():
     server = libtmux.Server()
