@@ -1,9 +1,5 @@
 #!/usr/bin/python
 
-import os
-import sys
-
-from tmc import tmc_backend as tcb
 # checks wether the app was called with an arg,
 # arg can be:
 #  1. a config-file to launch an ssh-session with
@@ -16,10 +12,12 @@ from tmc import tmc_backend as tcb
 # after init_adm was called, you can launch the actual app -
 # with a gui and in the correct tmux-environment.
 
+import os
+import sys
 
+from tmc import tmc_backend as tcb
 from tmc import tmc_init_adm
 from tmc import tmc_tmux_conf_check as tcc
-
 
 if __name__ == '__main__':
     # ensures all requirements in tmux.conf are met
