@@ -11,6 +11,9 @@ import tmc_ui as tcui
 import tmc_settings as tcs
 
 
+example_file = 'tmc/configs/taskf_ssh.json'
+
+
 class Config:
     
     def __init__(self, name):
@@ -237,11 +240,11 @@ def execute():
 
 # gets the commands by the operations respective module (tmc_$OPERATION),
 # launches one window per machine and issues the dicts cmd-value to that window
-def init_ops(operation='ssh'):
+def init_ops(f=example_file, operation='ssh'):
     server = libtmux.Server()
     if operation == 'ssh':
         # get dict with machine-info and ssh-commands (key = ssh)
-        target_dict = tmc_ssh.create_ssh_commands()
+        target_dict = tmc_ssh.create_ssh_commands(f)
     elif operation == 'foo':
         # target_dict = tmc_foo.create_foo_commands()
         pass
