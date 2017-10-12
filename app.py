@@ -23,14 +23,19 @@ if __name__ == '__main__':
     # ensures all requirements in tmux.conf are met
     tcc.check()
     try:
-        if sys.argv[1] == 'DIRECT_LAUNCH':
-            tcb.app()
+        if len(sys.argv) == 1:
+            # launches 1. the session containing the tool,
+            # and 2. this script with arg1 'DIRECT_LAUNCH'
+            tmc_init_adm.launch()
         else:
-            # initializes ops-session with arg-file
-            tcb.init_ops(sys.argv[1])
-            os.system('tmux attach-session -t tmc_ops')
-    except:
-        # launches 1. the session containing the tool,
-        # and 2. this script with arg1 'DIRECT_LAUNCH'
-        tmc_init_adm.launch()
+            if sys.argv[1] == 'DIRECT_LAUNCH':
+                tcb.app()
+            else:
+                # initializes ops-session with arg-file
+                tcb.init_ops(sys.argv[1])
+                os.system('tmux attach-session -t tmc_ops')
+    except (Exception,),e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print >> sys.stderr, "### Unexpected exception: '%s' [%s] in file '%s' at line: %d" % (str(e), exc_type, fname, exc_tb.tb_lineno)
 

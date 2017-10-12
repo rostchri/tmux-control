@@ -7,12 +7,12 @@ import libtmux
 
 from tmc_modules import tmc_session_manager
 from tmc_tasks import tmc_ssh
+from tmc_tasks import tmc_ansible_v1
 import tmc_ui as tcui
 import tmc_settings as tcs
 
 
 example_file = 'tmc/configs/taskf_ssh.json'
-
 
 class Config:
     
@@ -233,30 +233,37 @@ def main():
 # going to be called with a parameter defining the targets,
 # (e.g. ssh-connection=task, machines=targets (including login-information etc))
 def execute():
-    init_ops()        
+    init_ops()
     launch_msg = 'launch successful!'
     launch_ui(launch_msg, 'chr')
 
 
 # gets the commands by the operations respective module (tmc_$OPERATION),
 # launches one window per machine and issues the dicts cmd-value to that window
-def init_ops(f=example_file, operation='ssh'):
+def init_ops(f=example_file, operation='ansible'):
     server = libtmux.Server()
     if operation == 'ssh':
         # get dict with machine-info and ssh-commands (key = ssh)
         target_dict = tmc_ssh.create_ssh_commands(f)
+    elif operation == 'ansible':
+        target_dict = tmc_ansible_v1.create_ansible_v1_commands('/home/dey25201/Projekte/Talanx/ansible')
     elif operation == 'foo':
         # target_dict = tmc_foo.create_foo_commands()
         pass
     # add window-names and -ids to target-dict (window_id, window_name)
     # also actually creates ops-session and the windows
-    target_dict = tmc_session_manager.create_windows(target_dict)
-    session = server.find_where({ "session_name": "tmc_ops" })
-    pane_id = 1
-    for el in target_dict:
-        window = session.find_where({ "window_name": el['window_name']})
-        pane = window.select_pane('%{0}'.format(pane_id))
-        pane = pane.select_pane()
-        pane.send_keys(el['cmd'])
-        pane_id += 1
-
+    print >> sys.stderr, "%s" %(target_dict)
+    try:
+      target_dict = tmc_session_manager.create_windows(target_dict)
+      #session = server.find_where({ "session_name": "tmc_ops" })
+      #pane_id = 1
+      #for el in target_dict:
+      #  window = session.find_where({ "window_name": el['window_name']})
+      #  pane = window.select_pane('%{0}'.format(pane_id))
+      #  pane = pane.select_pane()
+      #  pane.send_keys(el['cmd'])
+      #  pane_id += 1
+    except (Exception,),e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      print >> sys.stderr, "### Unexpected exception: '%s' [%s] in file '%s' at line: %d" % (str(e), exc_type, fname, exc_tb.tb_lineno)
