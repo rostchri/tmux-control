@@ -44,8 +44,16 @@ create_window() {
 
 join_hosts_into_window() {
   local target="$1"; shift
-  local h tmpw
-  for h in "$@"; do
+  local hosts=( "$@" )
+  [ "${#hosts[@]}" -ge 1 ] || return 0
+
+  # Ersten Host im bestehenden Start-Pane nutzen
+  tmux select-pane -t "$SESSION:$target.0" -T "${hosts[0]}"
+
+  # Ab dem zweiten Host joinen
+  local i h tmpw
+  for (( i=1; i<${#hosts[@]}; i++ )); do
+    h="${hosts[$i]}"
     tmpw="$(sanitize_win_name "$h")"
     tmux new-window -t "$SESSION" -n "$tmpw"
     tmux join-pane  -s "$SESSION:$tmpw" -t "$SESSION:$target"
